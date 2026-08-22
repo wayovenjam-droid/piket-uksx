@@ -75,17 +75,47 @@
     @media (max-width: 992px) { .admin-4col-grid { grid-template-columns: repeat(2, 1fr); } }
     @media (max-width: 576px) { .admin-4col-grid { grid-template-columns: 1fr; } }
 
-    .col-box { background: #F9FAFB; border: 2px dashed #D1D5DB; border-radius: 18px; padding: 15px; min-height: 350px; display: flex; flex-direction: column; transition: background 0.2s, border-color 0.2s; }
-    .col-box.drag-over { background: #FFE8D6 !important; border-color: var(--primary) !important; border-style: solid !important; }
-    .col-header { font-weight: 800; font-size: 14px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
+    .col-box { 
+      background: #F9FAFB; 
+      border: 2px dashed #D1D5DB; 
+      border-radius: 18px; 
+      padding: 15px; 
+      min-height: 380px; 
+      display: flex; 
+      flex-direction: column; 
+      transition: all 0.15s ease-in-out; 
+    }
+    /* EFEK HOVER DRAG TERANG */
+    .col-box.drag-over { 
+      background: #FFE8D6 !important; 
+      border-color: var(--primary) !important; 
+      border-style: solid !important;
+      box-shadow: 0 0 15px rgba(255, 107, 0, 0.25);
+      transform: scale(1.01);
+    }
+    .col-header { font-weight: 800; font-size: 14px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; pointer-events: none; }
 
-    .card-list { flex: 1; overflow-y: auto; max-height: 400px; display: flex; flex-direction: column; gap: 10px; padding-right: 2px; }
+    .card-list { flex: 1; overflow-y: auto; max-height: 400px; display: flex; flex-direction: column; gap: 10px; padding: 4px; pointer-events: none; }
+    .draggable-card { pointer-events: auto; }
 
-    .draggable-card { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 12px; font-weight: 700; font-size: 13px; cursor: grab; box-shadow: 0 2px 6px rgba(0,0,0,0.04); display: flex; flex-direction: column; gap: 8px; }
-    .draggable-card:active { cursor: grabbing; background: #FFF4EC; }
+    .draggable-card { 
+      background: white; 
+      border: 1px solid var(--border); 
+      border-radius: 12px; 
+      padding: 12px; 
+      font-weight: 700; 
+      font-size: 13px; 
+      cursor: grab; 
+      box-shadow: 0 2px 6px rgba(0,0,0,0.04); 
+      display: flex; 
+      flex-direction: column; 
+      gap: 8px; 
+      user-select: none;
+    }
+    .draggable-card:active { cursor: grabbing; background: #FFF4EC; opacity: 0.6; }
     .card-top { display: flex; justify-content: space-between; align-items: center; }
     .delete-btn { color: #EF4444; cursor: pointer; padding: 2px 6px; }
-    .quick-move-select { font-size: 11px; padding: 4px 6px; border-radius: 8px; border: 1px solid #D1D5DB; background: #F3F4F6; color: #374151; font-weight: 600; }
+    .quick-move-select { font-size: 11px; padding: 4px 6px; border-radius: 8px; border: 1px solid #D1D5DB; background: #F3F4F6; color: #374151; font-weight: 600; cursor: pointer; }
 
     .master-panel { background: #E8F0FE; border: 1px solid #1A73E8; padding: 14px 18px; border-radius: 16px; font-size: 13px; color: #1967D2; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
     .wa-btn { background: #25D366; color: white; border: none; padding: 10px 16px; border-radius: 12px; font-size: 13px; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(37,211,102,0.2); }
@@ -124,7 +154,7 @@
     
     <div style="margin-top: 18px; text-align: center;">
       <a href="https://wa.me/6282288861606?text=Halo%20Master%20Admin,%20saya%20PJ%20PMR%20lupa%20password%20login" target="_blank" class="wa-btn">
-        <i class="fa-brands fa-whatsapp fa-lg"></i> Bantuan Lupa Password
+        <i class="fa-brands fa-whatsapp fa-lg"></i> Bantuan Lupa Password (WA)
       </a>
     </div>
   </div>
@@ -209,7 +239,7 @@
       </div>
       <div style="display: flex; gap: 8px;">
         <button onclick="bukaModalGantiPass()" style="background: #E8F0FE; color: #1A73E8; border: none; padding: 8px 14px; border-radius: 10px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px;">
-          <i class="fa-solid fa-key"></i> Ganti Password
+          <i class="fa-solid fa-key"></i> Ganti Pass
         </button>
         <button onclick="logoutAdmin()" style="background: #FCE8E6; color: #D93025; border: none; padding: 8px 14px; border-radius: 10px; font-weight: 700; cursor: pointer;">Logout</button>
       </div>
@@ -255,7 +285,7 @@
 
     <div class="admin-4col-grid">
       <!-- Kolom 1: Fase E -->
-      <div class="col-box" id="boxContainerE" ondragover="allowDrop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)" ondrop="dropToUnassigned(event)">
+      <div class="col-box" id="boxContainerE" data-target-shift="0">
         <div class="col-header" style="color: #4B5563;">
           <span><i class="fa-solid fa-users"></i> Unassigned E</span>
           <span id="countE" style="font-size: 12px; background: #E5E7EB; padding: 2px 8px; border-radius: 10px;">0</span>
@@ -264,7 +294,7 @@
       </div>
 
       <!-- Kolom 2: Fase F -->
-      <div class="col-box" id="boxContainerF" ondragover="allowDrop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)" ondrop="dropToUnassigned(event)">
+      <div class="col-box" id="boxContainerF" data-target-shift="0">
         <div class="col-header" style="color: #4B5563;">
           <span><i class="fa-solid fa-users"></i> Unassigned F</span>
           <span id="countF" style="font-size: 12px; background: #E5E7EB; padding: 2px 8px; border-radius: 10px;">0</span>
@@ -273,7 +303,7 @@
       </div>
 
       <!-- Kolom 3: Shift 1 -->
-      <div class="col-box" id="shift1Zone" style="background: #FFF8F3; border-color: var(--primary);" ondragover="allowDrop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)" ondrop="dropToShift(event, 1)">
+      <div class="col-box" id="shift1Zone" data-target-shift="1" style="background: #FFF8F3; border-color: var(--primary);">
         <div class="col-header" style="color: var(--primary);">
           <span><i class="fa-solid fa-sun"></i> Shift 1</span>
           <span id="countS1" style="font-size: 12px; background: var(--primary-light); padding: 2px 8px; border-radius: 10px;">0</span>
@@ -282,7 +312,7 @@
       </div>
 
       <!-- Kolom 4: Shift 2 (Hidden saat Jumat) -->
-      <div class="col-box" id="shift2Zone" style="background: #FFFBF0; border-color: var(--accent);" ondragover="allowDrop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)" ondrop="dropToShift(event, 2)">
+      <div class="col-box" id="shift2Zone" data-target-shift="2" style="background: #FFFBF0; border-color: var(--accent);">
         <div class="col-header" style="color: var(--accent);">
           <span><i class="fa-solid fa-cloud-sun"></i> Shift 2</span>
           <span id="countS2" style="font-size: 12px; background: #FEF3C7; padding: 2px 8px; border-radius: 10px;">0</span>
@@ -317,7 +347,7 @@
   let allMembers = [];
   let selectedHari = 'Senin';
   let selectedAdminHari = 'Senin';
-  let draggedMemberId = null;
+  let activeDraggedMemberId = null;
 
   setInterval(() => {
     const d = new Date();
@@ -451,7 +481,6 @@
     el.classList.add('active');
     document.getElementById('lblAdminDay').innerText = hari;
 
-    // KONTROL KHUSUS HARI JUMAT
     if(hari === 'Jumat') {
       document.getElementById('shift2Zone').style.display = 'none';
     } else {
@@ -488,7 +517,6 @@
     selectPiket.disabled = !isShiftOpen;
   }
 
-  // DATA FETCHING & RENDER
   async function muatDataSiswa() {
     const { data } = await sb.from('members').select('*');
     if(data) {
@@ -534,14 +562,18 @@
     allMembers.forEach(m => {
       const card = document.createElement('div');
       card.className = 'draggable-card';
-      card.draggable = true;
-      card.id = `member-${m.id}`;
+      card.setAttribute('draggable', 'true');
+      card.dataset.memberId = m.id;
 
-      // EVENT HANDLERS DRAG
+      // EVENT HANDLER KARTU DRAG
       card.addEventListener('dragstart', (e) => {
-        draggedMemberId = m.id;
+        activeDraggedMemberId = m.id;
         e.dataTransfer.setData("text/plain", m.id.toString());
         e.dataTransfer.effectAllowed = "move";
+      });
+
+      card.addEventListener('dragend', () => {
+        document.querySelectorAll('.col-box').forEach(b => b.classList.remove('drag-over'));
       });
 
       const isShift2Avail = selectedAdminHari !== 'Jumat';
@@ -572,6 +604,49 @@
     document.getElementById('countF').innerText = countF;
     document.getElementById('countS1').innerText = countS1;
     document.getElementById('countS2').innerText = countS2;
+
+    attachBoxDragListeners();
+  }
+
+  // ATTACH DRAG & DROP LISTENERS KE SETIAP KOLOM (FIX LAPTOP & MOUSE)
+  function attachBoxDragListeners() {
+    document.querySelectorAll('.col-box').forEach(box => {
+      box.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = "move";
+        box.classList.add('drag-over');
+      });
+
+      box.addEventListener('dragenter', (e) => {
+        e.preventDefault();
+        box.classList.add('drag-over');
+      });
+
+      box.addEventListener('dragleave', (e) => {
+        if (!box.contains(e.relatedTarget)) {
+          box.classList.remove('drag-over');
+        }
+      });
+
+      box.addEventListener('drop', async (e) => {
+        e.preventDefault();
+        box.classList.remove('drag-over');
+
+        const memberIdStr = e.dataTransfer.getData("text/plain") || activeDraggedMemberId;
+        if (!memberIdStr) return;
+
+        const memberId = parseInt(memberIdStr);
+        const targetShift = parseInt(box.dataset.targetShift);
+
+        await sb.from('members').update({ 
+          hari: selectedAdminHari, 
+          shift: targetShift 
+        }).eq('id', memberId);
+
+        activeDraggedMemberId = null;
+        muatKelolaAdmin();
+      });
+    });
   }
 
   async function quickPindahShift(memberId, val) {
@@ -593,35 +668,6 @@
   async function hapusAnggota(id, nama) {
     if(confirm(`Hapus ${nama} dari sistem?`)) {
       await sb.from('members').delete().eq('id', id);
-      muatKelolaAdmin();
-    }
-  }
-
-  // DRAG & DROP EVENT FIX HANDLERS
-  function allowDrop(e) { e.preventDefault(); }
-  function dragEnter(e) { e.preventDefault(); e.currentTarget.classList.add('drag-over'); }
-  function dragLeave(e) { e.currentTarget.classList.remove('drag-over'); }
-
-  async function dropToShift(e, shiftNum) {
-    e.preventDefault();
-    e.currentTarget.classList.remove('drag-over');
-    const memberId = e.dataTransfer.getData("text/plain") || draggedMemberId;
-
-    if(memberId) {
-      await sb.from('members').update({ hari: selectedAdminHari, shift: shiftNum }).eq('id', parseInt(memberId));
-      draggedMemberId = null;
-      muatKelolaAdmin();
-    }
-  }
-
-  async function dropToUnassigned(e) {
-    e.preventDefault();
-    e.currentTarget.classList.remove('drag-over');
-    const memberId = e.dataTransfer.getData("text/plain") || draggedMemberId;
-
-    if(memberId) {
-      await sb.from('members').update({ shift: 0 }).eq('id', parseInt(memberId));
-      draggedMemberId = null;
       muatKelolaAdmin();
     }
   }

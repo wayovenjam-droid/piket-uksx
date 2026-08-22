@@ -25,7 +25,7 @@
     * { box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; padding: 0; transition: all 0.2s ease; }
     body { background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
 
-    /* ================= WELCOME SCREEN & PHYSICS CANVAS ================= */
+    /* WELCOME SCREEN & PHYSICS CANVAS */
     #welcomeScreen {
       position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
       z-index: 9999; display: flex; align-items: center; justify-content: center;
@@ -63,7 +63,7 @@
     .btn-hero-siswa { background: rgba(255, 255, 255, 0.9); color: var(--text); border: 2px solid var(--border); }
     .btn-hero-siswa:hover { background: #FFF; border-color: var(--primary); color: var(--primary); transform: translateY(-3px); }
 
-    /* ================= MAIN CONTAINER ================= */
+    /* MAIN APP */
     .app-container { max-width: 950px; margin: 20px auto; background: var(--card-bg); border-radius: 24px; padding: 25px; box-shadow: var(--shadow); border: 1px solid var(--border); display: none; }
 
     .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.4); backdrop-filter: blur(8px); z-index: 10000; display: none; align-items: center; justify-content: center; }
@@ -94,22 +94,23 @@
     .time-info-card { background: #FFF8F3; border: 1px dashed var(--primary); padding: 14px; border-radius: 14px; font-size: 13px; margin-bottom: 20px; display: flex; gap: 15px; flex-wrap: wrap; }
     .time-info-item { display: flex; align-items: center; gap: 8px; font-weight: 600; }
 
-    /* DRAG & DROP & SCROLLABLE BOXES */
+    /* DRAG & DROP & BOXES */
     .admin-grid-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
     @media (max-width: 768px) { .admin-grid-layout { grid-template-columns: 1fr; } }
 
     .fase-box-container { background: #F9FAFB; border: 2px dashed var(--border); border-radius: 18px; padding: 15px; }
     .fase-box-header { display: flex; justify-content: space-between; align-items: center; font-weight: 800; font-size: 14px; margin-bottom: 12px; color: var(--text); }
-    .fase-scroll-list { max-height: 200px; overflow-y: auto; padding-right: 5px; min-height: 100px; }
-    .fase-scroll-list::-webkit-scrollbar { width: 5px; }
-    .fase-scroll-list::-webkit-scrollbar-thumb { background: #E0E0E0; border-radius: 10px; }
+    .fase-scroll-list { max-height: 220px; overflow-y: auto; padding-right: 5px; min-height: 120px; }
 
     .draggable-card { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 10px 14px; margin-bottom: 8px; font-weight: 700; font-size: 13px; cursor: grab; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.03); user-select: none; }
     .draggable-card:active { cursor: grabbing; opacity: 0.6; }
     .draggable-card .delete-btn { color: #D93025; cursor: pointer; padding: 4px; }
 
-    .dropzone-shift { background: #FFF8F3; border: 2px solid var(--primary-light); border-radius: 18px; padding: 15px; min-height: 140px; }
-    .dropzone-shift.drag-over { background: #FFE8D6; border-color: var(--primary); }
+    .dropzone-shift { background: #FFF8F3; border: 2px dashed var(--primary); border-radius: 18px; padding: 15px; min-height: 160px; }
+    .dropzone-shift.drag-over { background: #FFE8D6; border-style: solid; }
+
+    /* MASTER OVERRIDE BADGE */
+    .master-panel { background: #E8F0FE; border: 1px solid #1A73E8; padding: 12px 16px; border-radius: 14px; font-size: 13px; color: #1967D2; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
 
     .form-group { margin-bottom: 15px; text-align: left; }
     label { font-weight: 700; font-size: 13px; margin-bottom: 6px; display: block; }
@@ -174,7 +175,11 @@
       <div class="day-chip" onclick="pilihHari('Jumat', this)">Jumat</div>
     </div>
 
-    <!-- CARDS INFORMASI DURASI KAPAN MULAI PIKET -->
+    <!-- TANGGAL & CARDS DURASI WAKTU -->
+    <div style="background: white; border: 1px solid var(--border); border-radius: 14px; padding: 12px 16px; margin-bottom: 15px; font-weight: 700; font-size: 14px; color: var(--primary);">
+      <i class="fa-regular fa-calendar-check"></i> Tanggal: <span id="currentDateDisplay">-</span>
+    </div>
+
     <div class="time-info-card" id="timeInfoBox">
       <div class="time-info-item"><i class="fa-solid fa-sun" style="color:var(--primary)"></i> <b>Shift 1:</b> <span id="txtShift1">09:05 - 09:35 WIB</span></div>
       <div class="time-info-item"><i class="fa-solid fa-cloud-sun" style="color:var(--accent)"></i> <b>Shift 2:</b> <span id="txtShift2">12:15 - 13:00 WIB</span></div>
@@ -200,10 +205,15 @@
   <!-- VIEW BUKTI PIKET -->
   <div id="view-piket" class="view-section">
     <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 15px;">Upload Foto Bukti Piket</h3>
+    
+    <div id="masterTestingBadge" class="master-panel" style="display: none;">
+      <span><i class="fa-solid fa-flask"></i> <b>Master Mode Active:</b> Override Form Diaktifkan oleh Master Admin.</span>
+    </div>
+
     <form id="formPiket">
       <div class="form-group">
         <label>Nama Petugas Shift:</label>
-        <select id="selectNamaPiket" required><option value="">-- Kunci Terbuka Saat Jam Shift --</option></select>
+        <select id="selectNamaPiket" disabled required><option value="">-- Kunci Terbuka Saat Jam Shift --</option></select>
       </div>
       <div class="form-group">
         <label>Kondisi UKS / Catatan:</label>
@@ -219,12 +229,23 @@
 
   <!-- VIEW ADMIN -->
   <div id="view-admin" class="view-section">
-    <div style="background: var(--primary-light); padding: 16px; border-radius: 16px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+    <div style="background: var(--primary-light); padding: 16px; border-radius: 16px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center;">
       <div>
         <h4 id="adminWelcome" style="color: var(--primary); font-weight: 800;">Selamat Datang Admin</h4>
         <p id="adminRole" style="font-size: 12px; color: var(--text-muted);"></p>
       </div>
       <button onclick="logoutAdmin()" style="background: #FCE8E6; color: #D93025; border: none; padding: 8px 14px; border-radius: 10px; font-weight: 700; cursor: pointer;">Logout</button>
+    </div>
+
+    <!-- MASTER OVERRIDE BUTTON (HANYA MUNCUL DI ID ADMIN = 1) -->
+    <div id="masterOverrideBox" class="master-panel" style="display: none;">
+      <div>
+        <h5 style="font-weight: 800;"><i class="fa-solid fa-crown"></i> Control Master Admin</h5>
+        <p style="font-size: 11px; opacity: 0.8;">Buka kunci form piket kapan saja untuk testing.</p>
+      </div>
+      <button onclick="toggleMasterOverride()" id="btnMasterOverride" style="background: #1A73E8; color: white; border: none; padding: 8px 14px; border-radius: 8px; font-weight: 700; cursor: pointer;">
+        Buka Lock Form (Testing: OFF)
+      </button>
     </div>
 
     <!-- PILIH HARI ADMIN -->
@@ -247,26 +268,26 @@
     </div>
 
     <!-- SCROLLABLE BOX ANGGOTA FASE E & F -->
-    <h4 style="font-size: 14px; font-weight: 800; margin-bottom: 10px;"><i class="fa-solid fa-hand-pointer"></i> Tarik Anggota ke Shift Hari <span id="lblAdminDay">Senin</span></h4>
+    <h4 style="font-size: 14px; font-weight: 800; margin-bottom: 10px;"><i class="fa-solid fa-hand-pointer"></i> Drag Anggota ke Shift Hari <span id="lblAdminDay">Senin</span></h4>
     <div class="admin-grid-layout">
-      <div class="fase-box-container">
-        <div class="fase-box-header"><span><i class="fa-solid fa-user-group"></i> Fase E</span><span id="countE">0</span></div>
-        <div class="fase-scroll-list" id="boxFaseE" ondrop="dropToUnassigned(event)" ondragover="allowDrop(event)"></div>
+      <div class="fase-box-container" ondrop="dropToUnassigned(event)" ondragover="allowDrop(event)">
+        <div class="fase-box-header"><span><i class="fa-solid fa-user-group"></i> Unassigned Fase E</span><span id="countE">0</span></div>
+        <div class="fase-scroll-list" id="boxFaseE"></div>
       </div>
-      <div class="fase-box-container">
-        <div class="fase-box-header"><span><i class="fa-solid fa-user-group"></i> Fase F</span><span id="countF">0</span></div>
-        <div class="fase-scroll-list" id="boxFaseF" ondrop="dropToUnassigned(event)" ondragover="allowDrop(event)"></div>
+      <div class="fase-box-container" ondrop="dropToUnassigned(event)" ondragover="allowDrop(event)">
+        <div class="fase-box-header"><span><i class="fa-solid fa-user-group"></i> Unassigned Fase F</span><span id="countF">0</span></div>
+        <div class="fase-scroll-list" id="boxFaseF"></div>
       </div>
     </div>
 
     <!-- DROPZONES SHIFT -->
     <div class="admin-grid-layout">
       <div class="dropzone-shift" id="shift1Zone" ondrop="dropToShift(event, 1)" ondragover="allowDrop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
-        <h4 style="color: var(--primary); font-size: 14px; font-weight: 800; margin-bottom: 10px;"><i class="fa-solid fa-sun"></i> Shift 1 (Drop Disini)</h4>
+        <h4 style="color: var(--primary); font-size: 14px; font-weight: 800; margin-bottom: 10px;"><i class="fa-solid fa-sun"></i> Shift 1 (Drop Di Sini)</h4>
         <div id="shift1List"></div>
       </div>
       <div class="dropzone-shift" id="shift2Zone" ondrop="dropToShift(event, 2)" ondragover="allowDrop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
-        <h4 style="color: var(--accent); font-size: 14px; font-weight: 800; margin-bottom: 10px;"><i class="fa-solid fa-cloud-sun"></i> Shift 2 (Drop Disini)</h4>
+        <h4 style="color: var(--accent); font-size: 14px; font-weight: 800; margin-bottom: 10px;"><i class="fa-solid fa-cloud-sun"></i> Shift 2 (Drop Di Sini)</h4>
         <div id="shift2List"></div>
       </div>
     </div>
@@ -280,11 +301,11 @@
   const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
   let currentAdminSession = null;
+  let isMasterOverride = false;
   let allMembers = [];
   let selectedHari = 'Senin';
   let selectedAdminHari = 'Senin';
 
-  // WAKTU DURASI SHIFT PER HARI
   const scheduleTimes = {
     'Senin': { s1: '09:05 - 09:35 WIB', s2: '12:15 - 13:00 WIB' },
     'Selasa': { s1: '09:20 - 09:50 WIB', s2: '11:50 - 12:50 WIB' },
@@ -295,15 +316,23 @@
 
   // Clock & Shift Realtime Check
   setInterval(() => {
-    document.getElementById('clockInfo').innerHTML = `<i class="fa-regular fa-clock"></i> ` + new Date().toLocaleTimeString('id-ID');
+    const d = new Date();
+    document.getElementById('clockInfo').innerHTML = `<i class="fa-regular fa-clock"></i> ` + d.toLocaleTimeString('id-ID');
     cekAktifShift();
   }, 1000);
+
+  function updateDateDisplay() {
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    document.getElementById('currentDateDisplay').innerText = new Date().toLocaleDateString('id-ID', options);
+  }
 
   function masukPortalSiswa() {
     document.getElementById('welcomeScreen').style.display = 'none';
     document.getElementById('mainApp').style.display = 'block';
     
-    // Set hari default sesuai hari ini di HP user
+    updateDateDisplay();
+
+    // Default hari ini
     const daysArr = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
     const today = daysArr[new Date().getDay()];
     if(scheduleTimes[today]) selectedHari = today;
@@ -334,13 +363,42 @@
     document.getElementById('adminWelcome').innerText = `Selamat Datang, ${data.nama}`;
     document.getElementById('adminRole').innerText = `Jabatan: ${data.jabatan} (@${data.username})`;
     
+    // Cek jika ID Admin = 1 (Master Admin)
+    if(data.id === 1 || data.id === "1") {
+      document.getElementById('masterOverrideBox').style.display = 'flex';
+    } else {
+      document.getElementById('masterOverrideBox').style.display = 'none';
+    }
+
     switchTab('admin', document.getElementById('tabAdminBtn'));
     muatKelolaAdmin();
   }
 
+  function toggleMasterOverride() {
+    isMasterOverride = !isMasterOverride;
+    const btn = document.getElementById('btnMasterOverride');
+    const badge = document.getElementById('masterTestingBadge');
+
+    if(isMasterOverride) {
+      btn.innerText = "Lock Form (Testing: ON)";
+      btn.style.background = "#D93025";
+      badge.style.display = 'flex';
+      alert("Master Override Aktif! Form Bukti Piket sekarang terbuka penuh untuk testing.");
+    } else {
+      btn.innerText = "Buka Lock Form (Testing: OFF)";
+      btn.style.background = "#1A73E8";
+      badge.style.display = 'none';
+      alert("Master Override Dinonaktifkan.");
+    }
+    cekAktifShift();
+  }
+
   function logoutAdmin() {
     currentAdminSession = null;
+    isMasterOverride = false;
     document.getElementById('tabAdminBtn').style.display = 'none';
+    document.getElementById('masterOverrideBox').style.display = 'none';
+    document.getElementById('masterTestingBadge').style.display = 'none';
     switchTab('siswa', document.getElementById('tabSiswaBtn'));
   }
 
@@ -383,8 +441,16 @@
     else if (day >= 2 && day <= 4 && ((timeStr >= "09:20" && timeStr <= "09:50") || (timeStr >= "11:50" && timeStr <= "12:50"))) isShiftOpen = true;
     else if (day === 5 && (timeStr >= "09:00" && timeStr <= "09:40")) isShiftOpen = true;
 
-    document.getElementById('shiftTextInfo').innerText = isShiftOpen ? "Jam Shift Sedang Berlangsung!" : "Di luar jam piket (Form Terkunci 🔒)";
-    document.getElementById('selectNamaPiket').disabled = !isShiftOpen;
+    if(isMasterOverride) isShiftOpen = true;
+
+    const selectPiket = document.getElementById('selectNamaPiket');
+    if (isShiftOpen) {
+      document.getElementById('shiftTextInfo').innerText = isMasterOverride ? "JAM SHIFT AKTIF (Master Override On)" : "Jam Shift Sedang Berlangsung!";
+      selectPiket.disabled = false;
+    } else {
+      document.getElementById('shiftTextInfo').innerText = "Di luar jam piket (Form Terkunci 🔒)";
+      selectPiket.disabled = true;
+    }
   }
 
   // ================= DATA & RENDER =================
@@ -393,16 +459,24 @@
     if(data) {
       allMembers = data;
       renderShiftSiswa();
+      populateDropdownPiket();
     }
   }
 
   function renderShiftSiswa() {
-    // Filter petugas berdasarkan Hari dan Shift
     const s1 = allMembers.filter(m => m.hari === selectedHari && m.shift === 1);
     const s2 = allMembers.filter(m => m.hari === selectedHari && m.shift === 2);
 
     document.getElementById('listShift1Siswa').innerHTML = s1.length ? s1.map(m => `<div style="padding:4px 0">• ${m.nama} (Fase ${m.fase})</div>`).join('') : '<span style="color:#aaa; font-size:12px;">Tidak ada petugas</span>';
     document.getElementById('listShift2Siswa').innerHTML = s2.length ? s2.map(m => `<div style="padding:4px 0">• ${m.nama} (Fase ${m.fase})</div>`).join('') : '<span style="color:#aaa; font-size:12px;">Tidak ada petugas</span>';
+  }
+
+  function populateDropdownPiket() {
+    const select = document.getElementById('selectNamaPiket');
+    select.innerHTML = '<option value="">-- Pilih Nama Petugas --</option>';
+    allMembers.forEach(m => {
+      select.innerHTML += `<option value="${m.nama}">${m.nama} (Fase ${m.fase} - ${m.hari})</option>`;
+    });
   }
 
   async function muatKelolaAdmin() {
@@ -427,16 +501,19 @@
       card.className = 'draggable-card';
       card.draggable = true;
       card.id = `member-${m.id}`;
-      card.ondragstart = (e) => dragStart(e, m.id);
+      
+      // Fixed Drag Handler
+      card.addEventListener('dragstart', (e) => {
+        e.dataTransfer.setData("text/plain", m.id.toString());
+      });
+
       card.innerHTML = `<span>${m.nama}</span> <i class="fa-solid fa-trash delete-btn" onclick="hapusAnggota(${m.id}, '${m.nama}')"></i>`;
 
-      // Jika anggota ada di shift pada hari yang sedang dipilih Admin
       if(m.hari === selectedAdminHari && m.shift === 1) {
         listS1.appendChild(card);
       } else if(m.hari === selectedAdminHari && m.shift === 2) {
         listS2.appendChild(card);
       } else {
-        // Anggota belum di-assign pada hari ini
         if(m.fase === 'E') { boxE.appendChild(card); countE++; }
         else { boxF.appendChild(card); countF++; }
       }
@@ -446,7 +523,7 @@
     document.getElementById('countF').innerText = `${countF} Anggota`;
   }
 
-  // Tambah Anggota Baru
+  // Tambah Anggota
   document.getElementById('formTambahAnggota').onsubmit = async (e) => {
     e.preventDefault();
     const nama = document.getElementById('namaBaru').value;
@@ -464,11 +541,17 @@
     }
   }
 
-  // DRAG & DROP HANDLERS
-  function allowDrop(e) { e.preventDefault(); }
-  function dragEnter(e) { e.currentTarget.classList.add('drag-over'); }
-  function dragLeave(e) { e.currentTarget.classList.remove('drag-over'); }
-  function dragStart(e, id) { e.dataTransfer.setData("text/plain", id); }
+  // ================= DRAG & DROP HANDLERS (PERBAIKAN FITUR DROP) =================
+  function allowDrop(e) { 
+    e.preventDefault(); 
+  }
+  function dragEnter(e) { 
+    e.preventDefault(); 
+    e.currentTarget.classList.add('drag-over'); 
+  }
+  function dragLeave(e) { 
+    e.currentTarget.classList.remove('drag-over'); 
+  }
 
   async function dropToShift(e, shiftNum) {
     e.preventDefault();
@@ -476,7 +559,7 @@
     const memberId = e.dataTransfer.getData("text/plain");
 
     if(memberId) {
-      await sb.from('members').update({ hari: selectedAdminHari, shift: shiftNum }).eq('id', memberId);
+      await sb.from('members').update({ hari: selectedAdminHari, shift: shiftNum }).eq('id', parseInt(memberId));
       muatKelolaAdmin();
     }
   }
@@ -486,12 +569,12 @@
     const memberId = e.dataTransfer.getData("text/plain");
 
     if(memberId) {
-      await sb.from('members').update({ shift: 0 }).eq('id', memberId);
+      await sb.from('members').update({ shift: 0 }).eq('id', parseInt(memberId));
       muatKelolaAdmin();
     }
   }
 
-  // PHYSICS CANVAS
+  // PHYSICS CANVAS BACKGROUND
   const canvas = document.getElementById('physicsCanvas');
   const ctx = canvas.getContext('2d');
   function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }

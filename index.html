@@ -25,7 +25,7 @@
     * { box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; padding: 0; transition: all 0.2s ease; }
     body { background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
 
-    /* ================= WELCOME SCREEN & CANVAS PHYSICS ================= */
+    /* ================= WELCOME SCREEN & PHYSICS CANVAS ================= */
     #welcomeScreen {
       position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
       z-index: 9999; display: flex; align-items: center; justify-content: center;
@@ -63,10 +63,9 @@
     .btn-hero-siswa { background: rgba(255, 255, 255, 0.9); color: var(--text); border: 2px solid var(--border); }
     .btn-hero-siswa:hover { background: #FFF; border-color: var(--primary); color: var(--primary); transform: translateY(-3px); }
 
-    /* ================= MAIN APP ================= */
+    /* ================= MAIN CONTAINER ================= */
     .app-container { max-width: 950px; margin: 20px auto; background: var(--card-bg); border-radius: 24px; padding: 25px; box-shadow: var(--shadow); border: 1px solid var(--border); display: none; }
 
-    /* Modal Login */
     .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.4); backdrop-filter: blur(8px); z-index: 10000; display: none; align-items: center; justify-content: center; }
     .modal-card { background: white; border-radius: 24px; padding: 30px; width: 90%; max-width: 380px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); position: relative; }
 
@@ -87,36 +86,31 @@
     .view-section { display: none; }
     .view-section.active { display: block; }
 
-    /* ================= DRAG & DROP & MOBILE COMPACT STYLES ================= */
-    .admin-grid-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
+    /* PILIH HARI TAB & CARDS */
+    .day-selector-bar { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 20px; }
+    .day-chip { padding: 10px 18px; background: #F0F0F5; border-radius: 12px; font-weight: 700; font-size: 13px; color: var(--text-muted); cursor: pointer; border: 2px solid transparent; white-space: nowrap; }
+    .day-chip.active { background: var(--primary-light); color: var(--primary); border-color: var(--primary); }
+
+    .time-info-card { background: #FFF8F3; border: 1px dashed var(--primary); padding: 14px; border-radius: 14px; font-size: 13px; margin-bottom: 20px; display: flex; gap: 15px; flex-wrap: wrap; }
+    .time-info-item { display: flex; align-items: center; gap: 8px; font-weight: 600; }
+
+    /* DRAG & DROP & SCROLLABLE BOXES */
+    .admin-grid-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
     @media (max-width: 768px) { .admin-grid-layout { grid-template-columns: 1fr; } }
 
-    .fase-box-container {
-      background: #F9FAFB; border: 2px dashed var(--border); border-radius: 18px; padding: 15px;
-    }
+    .fase-box-container { background: #F9FAFB; border: 2px dashed var(--border); border-radius: 18px; padding: 15px; }
     .fase-box-header { display: flex; justify-content: space-between; align-items: center; font-weight: 800; font-size: 14px; margin-bottom: 12px; color: var(--text); }
-    
-    .fase-scroll-list {
-      max-height: 220px; overflow-y: auto; padding-right: 5px; min-height: 120px;
-    }
-    /* Scrollbar Style */
+    .fase-scroll-list { max-height: 200px; overflow-y: auto; padding-right: 5px; min-height: 100px; }
     .fase-scroll-list::-webkit-scrollbar { width: 5px; }
     .fase-scroll-list::-webkit-scrollbar-thumb { background: #E0E0E0; border-radius: 10px; }
 
-    .draggable-card {
-      background: white; border: 1px solid var(--border); border-radius: 12px; padding: 10px 14px;
-      margin-bottom: 8px; font-weight: 700; font-size: 13px; cursor: grab; display: flex; justify-content: space-between; align-items: center;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.03); user-select: none;
-    }
+    .draggable-card { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 10px 14px; margin-bottom: 8px; font-weight: 700; font-size: 13px; cursor: grab; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.03); user-select: none; }
     .draggable-card:active { cursor: grabbing; opacity: 0.6; }
     .draggable-card .delete-btn { color: #D93025; cursor: pointer; padding: 4px; }
 
-    .dropzone-shift {
-      background: #FFF8F3; border: 2px solid var(--primary-light); border-radius: 18px; padding: 15px; min-height: 150px;
-    }
+    .dropzone-shift { background: #FFF8F3; border: 2px solid var(--primary-light); border-radius: 18px; padding: 15px; min-height: 140px; }
     .dropzone-shift.drag-over { background: #FFE8D6; border-color: var(--primary); }
 
-    /* Form UI */
     .form-group { margin-bottom: 15px; text-align: left; }
     label { font-weight: 700; font-size: 13px; margin-bottom: 6px; display: block; }
     input, select { width: 100%; padding: 12px 14px; border: 2px solid var(--border); border-radius: 12px; font-size: 14px; outline: none; }
@@ -126,7 +120,7 @@
 </head>
 <body>
 
-<!-- WELCOME SCREEN WITH BALL PHYSICS -->
+<!-- WELCOME SCREEN -->
 <div id="welcomeScreen">
   <canvas id="physicsCanvas"></canvas>
   <div class="hero-glass-card">
@@ -171,17 +165,33 @@
 
   <!-- VIEW SISWA -->
   <div id="view-siswa" class="view-section active">
-    <div style="background: #FFF4EC; border: 2px solid var(--primary-light); padding: 16px; border-radius: 16px; font-size: 14px; font-weight: 600; color: var(--primary); margin-bottom: 20px;">
+    <!-- BAR PILIH HARI -->
+    <div class="day-selector-bar">
+      <div class="day-chip active" onclick="pilihHari('Senin', this)">Senin</div>
+      <div class="day-chip" onclick="pilihHari('Selasa', this)">Selasa</div>
+      <div class="day-chip" onclick="pilihHari('Rabu', this)">Rabu</div>
+      <div class="day-chip" onclick="pilihHari('Kamis', this)">Kamis</div>
+      <div class="day-chip" onclick="pilihHari('Jumat', this)">Jumat</div>
+    </div>
+
+    <!-- CARDS INFORMASI DURASI KAPAN MULAI PIKET -->
+    <div class="time-info-card" id="timeInfoBox">
+      <div class="time-info-item"><i class="fa-solid fa-sun" style="color:var(--primary)"></i> <b>Shift 1:</b> <span id="txtShift1">09:05 - 09:35 WIB</span></div>
+      <div class="time-info-item"><i class="fa-solid fa-cloud-sun" style="color:var(--accent)"></i> <b>Shift 2:</b> <span id="txtShift2">12:15 - 13:00 WIB</span></div>
+    </div>
+
+    <div style="background: #FFF4EC; border: 1px solid var(--primary-light); padding: 14px; border-radius: 14px; font-size: 13px; font-weight: 600; color: var(--primary); margin-bottom: 20px;">
       <i class="fa-solid fa-circle-info fa-lg"></i> <span id="shiftTextInfo">Memeriksa jadwal shift...</span>
     </div>
-    <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 12px;">Daftar Petugas Piket Hari Ini</h3>
+
+    <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 12px;">Petugas Piket Hari <span id="lblSelectedDay">Senin</span></h3>
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
       <div style="background: white; border: 1px solid var(--border); border-radius: 16px; padding: 15px;">
-        <h4 style="color: var(--primary); margin-bottom: 10px;"><i class="fa-solid fa-sun"></i> Shift 1 (Istirahat 1)</h4>
+        <h4 style="color: var(--primary); margin-bottom: 10px; font-size: 14px;"><i class="fa-solid fa-sun"></i> Shift 1 (Istirahat Pertama)</h4>
         <div id="listShift1Siswa" style="font-size: 13px; font-weight: 600;">- Memuat -</div>
       </div>
       <div style="background: white; border: 1px solid var(--border); border-radius: 16px; padding: 15px;">
-        <h4 style="color: var(--accent); margin-bottom: 10px;"><i class="fa-solid fa-cloud-sun"></i> Shift 2 (Istirahat 2)</h4>
+        <h4 style="color: var(--accent); margin-bottom: 10px; font-size: 14px;"><i class="fa-solid fa-cloud-sun"></i> Shift 2 (Istirahat Kedua)</h4>
         <div id="listShift2Siswa" style="font-size: 13px; font-weight: 600;">- Memuat -</div>
       </div>
     </div>
@@ -197,17 +207,17 @@
       </div>
       <div class="form-group">
         <label>Kondisi UKS / Catatan:</label>
-        <input type="text" id="catatanPiket" placeholder="Contoh: UKS Rapih, Paracetamol Habis" required>
+        <input type="text" id="catatanPiket" placeholder="Contoh: UKS Rapih, Obat P3K Lengkap" required>
       </div>
       <div class="form-group">
         <label>Foto Bukti Piket:</label>
         <input type="file" id="fotoPiket" accept="image/*" required>
       </div>
-      <button type="submit" class="btn-aesthetic"><i class="fa-solid fa-paper-plane"></i> Kirim Laporan</button>
+      <button type="submit" class="btn-aesthetic"><i class="fa-solid fa-paper-plane"></i> Kirim Laporan Piket</button>
     </form>
   </div>
 
-  <!-- VIEW ADMIN (WITH DRAG & DROP + COMPACT SCROLLABLE BOX) -->
+  <!-- VIEW ADMIN -->
   <div id="view-admin" class="view-section">
     <div style="background: var(--primary-light); padding: 16px; border-radius: 16px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
       <div>
@@ -217,9 +227,18 @@
       <button onclick="logoutAdmin()" style="background: #FCE8E6; color: #D93025; border: none; padding: 8px 14px; border-radius: 10px; font-weight: 700; cursor: pointer;">Logout</button>
     </div>
 
+    <!-- PILIH HARI ADMIN -->
+    <div class="day-selector-bar">
+      <div class="day-chip active" onclick="pilihHariAdmin('Senin', this)">Atur Senin</div>
+      <div class="day-chip" onclick="pilihHariAdmin('Selasa', this)">Atur Selasa</div>
+      <div class="day-chip" onclick="pilihHariAdmin('Rabu', this)">Atur Rabu</div>
+      <div class="day-chip" onclick="pilihHariAdmin('Kamis', this)">Atur Kamis</div>
+      <div class="day-chip" onclick="pilihHariAdmin('Jumat', this)">Atur Jumat</div>
+    </div>
+
     <!-- Form Tambah Anggota -->
     <div style="background: #FDFDFD; border: 1px solid var(--border); padding: 15px; border-radius: 16px; margin-bottom: 20px;">
-      <h4 style="font-size: 14px; font-weight: 800; margin-bottom: 10px;">+ Tambah Anggota Baru</h4>
+      <h4 style="font-size: 14px; font-weight: 800; margin-bottom: 10px;">+ Tambah Anggota PMR Baru</h4>
       <form id="formTambahAnggota" style="display: flex; gap: 10px;">
         <input type="text" id="namaBaru" placeholder="Nama Lengkap Petugas" required style="flex: 2;">
         <select id="faseBaru" style="flex: 1;"><option value="E">Fase E</option><option value="F">Fase F</option></select>
@@ -227,29 +246,25 @@
       </form>
     </div>
 
-    <!-- KOTAK 2 ANGGOTA SCROLLABLE (MOBILE FRIENDLY) -->
-    <h4 style="font-size: 14px; font-weight: 800; margin-bottom: 10px;"><i class="fa-solid fa-hand-pointer"></i> Tarik / Drag Anggota ke Shift</h4>
+    <!-- SCROLLABLE BOX ANGGOTA FASE E & F -->
+    <h4 style="font-size: 14px; font-weight: 800; margin-bottom: 10px;"><i class="fa-solid fa-hand-pointer"></i> Tarik Anggota ke Shift Hari <span id="lblAdminDay">Senin</span></h4>
     <div class="admin-grid-layout">
-      <!-- Box Fase E -->
       <div class="fase-box-container">
         <div class="fase-box-header"><span><i class="fa-solid fa-user-group"></i> Fase E</span><span id="countE">0</span></div>
         <div class="fase-scroll-list" id="boxFaseE" ondrop="dropToUnassigned(event)" ondragover="allowDrop(event)"></div>
       </div>
-      <!-- Box Fase F -->
       <div class="fase-box-container">
         <div class="fase-box-header"><span><i class="fa-solid fa-user-group"></i> Fase F</span><span id="countF">0</span></div>
         <div class="fase-scroll-list" id="boxFaseF" ondrop="dropToUnassigned(event)" ondragover="allowDrop(event)"></div>
       </div>
     </div>
 
-    <!-- DROPZONES SHIFT 1 & 2 -->
+    <!-- DROPZONES SHIFT -->
     <div class="admin-grid-layout">
-      <!-- Shift 1 Dropzone -->
       <div class="dropzone-shift" id="shift1Zone" ondrop="dropToShift(event, 1)" ondragover="allowDrop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
         <h4 style="color: var(--primary); font-size: 14px; font-weight: 800; margin-bottom: 10px;"><i class="fa-solid fa-sun"></i> Shift 1 (Drop Disini)</h4>
         <div id="shift1List"></div>
       </div>
-      <!-- Shift 2 Dropzone -->
       <div class="dropzone-shift" id="shift2Zone" ondrop="dropToShift(event, 2)" ondragover="allowDrop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
         <h4 style="color: var(--accent); font-size: 14px; font-weight: 800; margin-bottom: 10px;"><i class="fa-solid fa-cloud-sun"></i> Shift 2 (Drop Disini)</h4>
         <div id="shift2List"></div>
@@ -266,8 +281,19 @@
 
   let currentAdminSession = null;
   let allMembers = [];
+  let selectedHari = 'Senin';
+  let selectedAdminHari = 'Senin';
 
-  // Clock & Shift Info
+  // WAKTU DURASI SHIFT PER HARI
+  const scheduleTimes = {
+    'Senin': { s1: '09:05 - 09:35 WIB', s2: '12:15 - 13:00 WIB' },
+    'Selasa': { s1: '09:20 - 09:50 WIB', s2: '11:50 - 12:50 WIB' },
+    'Rabu': { s1: '09:20 - 09:50 WIB', s2: '11:50 - 12:50 WIB' },
+    'Kamis': { s1: '09:20 - 09:50 WIB', s2: '11:50 - 12:50 WIB' },
+    'Jumat': { s1: '09:00 - 09:40 WIB', s2: 'Tidak Ada (Jumat Taqwa)' }
+  };
+
+  // Clock & Shift Realtime Check
   setInterval(() => {
     document.getElementById('clockInfo').innerHTML = `<i class="fa-regular fa-clock"></i> ` + new Date().toLocaleTimeString('id-ID');
     cekAktifShift();
@@ -276,6 +302,13 @@
   function masukPortalSiswa() {
     document.getElementById('welcomeScreen').style.display = 'none';
     document.getElementById('mainApp').style.display = 'block';
+    
+    // Set hari default sesuai hari ini di HP user
+    const daysArr = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+    const today = daysArr[new Date().getDay()];
+    if(scheduleTimes[today]) selectedHari = today;
+    
+    updateUIHariSiswa();
     muatDataSiswa();
   }
 
@@ -314,9 +347,30 @@
   function switchTab(tabName, element) {
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
-    
     document.getElementById(`view-${tabName}`).classList.add('active');
     element.classList.add('active');
+  }
+
+  function pilihHari(hari, el) {
+    selectedHari = hari;
+    document.querySelectorAll('#view-siswa .day-chip').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+    updateUIHariSiswa();
+    renderShiftSiswa();
+  }
+
+  function pilihHariAdmin(hari, el) {
+    selectedAdminHari = hari;
+    document.querySelectorAll('#view-admin .day-chip').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('lblAdminDay').innerText = hari;
+    renderAdminBoxes();
+  }
+
+  function updateUIHariSiswa() {
+    document.getElementById('lblSelectedDay').innerText = selectedHari;
+    document.getElementById('txtShift1').innerText = scheduleTimes[selectedHari].s1;
+    document.getElementById('txtShift2').innerText = scheduleTimes[selectedHari].s2;
   }
 
   function cekAktifShift() {
@@ -333,7 +387,7 @@
     document.getElementById('selectNamaPiket').disabled = !isShiftOpen;
   }
 
-  // ================= SUPABASE DATA & RENDER =================
+  // ================= DATA & RENDER =================
   async function muatDataSiswa() {
     const { data } = await sb.from('members').select('*');
     if(data) {
@@ -343,11 +397,12 @@
   }
 
   function renderShiftSiswa() {
-    const s1 = allMembers.filter(m => m.shift === 1);
-    const s2 = allMembers.filter(m => m.shift === 2);
+    // Filter petugas berdasarkan Hari dan Shift
+    const s1 = allMembers.filter(m => m.hari === selectedHari && m.shift === 1);
+    const s2 = allMembers.filter(m => m.hari === selectedHari && m.shift === 2);
 
-    document.getElementById('listShift1Siswa').innerHTML = s1.length ? s1.map(m => `<div>• ${m.nama} (Fase ${m.fase})</div>`).join('') : '<span style="color:#aaa">Belum ada petugas</span>';
-    document.getElementById('listShift2Siswa').innerHTML = s2.length ? s2.map(m => `<div>• ${m.nama} (Fase ${m.fase})</div>`).join('') : '<span style="color:#aaa">Belum ada petugas</span>';
+    document.getElementById('listShift1Siswa').innerHTML = s1.length ? s1.map(m => `<div style="padding:4px 0">• ${m.nama} (Fase ${m.fase})</div>`).join('') : '<span style="color:#aaa; font-size:12px;">Tidak ada petugas</span>';
+    document.getElementById('listShift2Siswa').innerHTML = s2.length ? s2.map(m => `<div style="padding:4px 0">• ${m.nama} (Fase ${m.fase})</div>`).join('') : '<span style="color:#aaa; font-size:12px;">Tidak ada petugas</span>';
   }
 
   async function muatKelolaAdmin() {
@@ -365,7 +420,6 @@
     const listS2 = document.getElementById('shift2List');
 
     boxE.innerHTML = ''; boxF.innerHTML = ''; listS1.innerHTML = ''; listS2.innerHTML = '';
-
     let countE = 0, countF = 0;
 
     allMembers.forEach(m => {
@@ -376,13 +430,15 @@
       card.ondragstart = (e) => dragStart(e, m.id);
       card.innerHTML = `<span>${m.nama}</span> <i class="fa-solid fa-trash delete-btn" onclick="hapusAnggota(${m.id}, '${m.nama}')"></i>`;
 
-      if(!m.shift || m.shift === 0) {
+      // Jika anggota ada di shift pada hari yang sedang dipilih Admin
+      if(m.hari === selectedAdminHari && m.shift === 1) {
+        listS1.appendChild(card);
+      } else if(m.hari === selectedAdminHari && m.shift === 2) {
+        listS2.appendChild(card);
+      } else {
+        // Anggota belum di-assign pada hari ini
         if(m.fase === 'E') { boxE.appendChild(card); countE++; }
         else { boxF.appendChild(card); countF++; }
-      } else if(m.shift === 1) {
-        listS1.appendChild(card);
-      } else if(m.shift === 2) {
-        listS2.appendChild(card);
       }
     });
 
@@ -390,13 +446,13 @@
     document.getElementById('countF').innerText = `${countF} Anggota`;
   }
 
-  // Tambah Anggota
+  // Tambah Anggota Baru
   document.getElementById('formTambahAnggota').onsubmit = async (e) => {
     e.preventDefault();
     const nama = document.getElementById('namaBaru').value;
     const fase = document.getElementById('faseBaru').value;
 
-    await sb.from('members').insert([{ nama, fase, shift: 0 }]);
+    await sb.from('members').insert([{ nama, fase, hari: selectedAdminHari, shift: 0 }]);
     document.getElementById('namaBaru').value = '';
     muatKelolaAdmin();
   };
@@ -408,14 +464,11 @@
     }
   }
 
-  // ================= DRAG AND DROP HANDLERS =================
+  // DRAG & DROP HANDLERS
   function allowDrop(e) { e.preventDefault(); }
   function dragEnter(e) { e.currentTarget.classList.add('drag-over'); }
   function dragLeave(e) { e.currentTarget.classList.remove('drag-over'); }
-
-  function dragStart(e, id) {
-    e.dataTransfer.setData("text/plain", id);
-  }
+  function dragStart(e, id) { e.dataTransfer.setData("text/plain", id); }
 
   async function dropToShift(e, shiftNum) {
     e.preventDefault();
@@ -423,7 +476,7 @@
     const memberId = e.dataTransfer.getData("text/plain");
 
     if(memberId) {
-      await sb.from('members').update({ shift: shiftNum }).eq('id', memberId);
+      await sb.from('members').update({ hari: selectedAdminHari, shift: shiftNum }).eq('id', memberId);
       muatKelolaAdmin();
     }
   }
@@ -438,7 +491,7 @@
     }
   }
 
-  // ================= PHYSICS CANVAS SIMULATION =================
+  // PHYSICS CANVAS
   const canvas = document.getElementById('physicsCanvas');
   const ctx = canvas.getContext('2d');
   function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }

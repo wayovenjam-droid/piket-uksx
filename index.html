@@ -18,14 +18,14 @@
       --card-bg: #FFFFFF;
       --text: #2D3142;
       --text-muted: #9C9EB9;
-      --border: #F0F0F5;
+      --border: #E5E7EB;
       --shadow: 0 10px 30px rgba(255, 107, 0, 0.08);
     }
 
     * { box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; padding: 0; transition: all 0.2s ease; }
     body { background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
 
-    /* WELCOME SCREEN & PHYSICS CANVAS */
+    /* WELCOME SCREEN */
     #welcomeScreen {
       position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
       z-index: 9999; display: flex; align-items: center; justify-content: center;
@@ -35,47 +35,27 @@
     #physicsCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
 
     .hero-glass-card {
-      position: relative; z-index: 10;
-      background: rgba(255, 255, 255, 0.7);
+      position: relative; z-index: 10; background: rgba(255, 255, 255, 0.85);
       backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.8);
-      padding: 40px 30px; border-radius: 32px;
-      box-shadow: 0 20px 50px rgba(255, 107, 0, 0.15);
-      text-align: center; max-width: 420px; width: 90%;
-      animation: heroPop 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      border: 1px solid rgba(255, 255, 255, 0.8); padding: 40px 30px; border-radius: 32px;
+      box-shadow: 0 20px 50px rgba(255, 107, 0, 0.15); text-align: center; max-width: 420px; width: 90%;
     }
-    @keyframes heroPop { 0% { opacity: 0; transform: scale(0.8) translateY(20px); } 100% { opacity: 1; transform: scale(1) translateY(0); } }
-
-    .hero-icon {
-      width: 70px; height: 70px; background: linear-gradient(135deg, var(--primary), var(--accent));
-      color: white; border-radius: 22px; display: flex; align-items: center; justify-content: center;
-      font-size: 32px; margin: 0 auto 20px; box-shadow: 0 10px 25px rgba(255, 107, 0, 0.3);
-    }
+    .hero-icon { width: 70px; height: 70px; background: linear-gradient(135deg, var(--primary), var(--accent)); color: white; border-radius: 22px; display: flex; align-items: center; justify-content: center; font-size: 32px; margin: 0 auto 20px; box-shadow: 0 10px 25px rgba(255, 107, 0, 0.3); }
     .hero-title { font-size: 26px; font-weight: 800; color: var(--text); margin-bottom: 8px; }
     .hero-subtitle { font-size: 14px; color: var(--text-muted); margin-bottom: 30px; font-weight: 600; }
 
-    .btn-hero {
-      width: 100%; padding: 16px; border-radius: 18px; font-weight: 800; font-size: 15px; cursor: pointer;
-      display: flex; align-items: center; justify-content: center; gap: 10px; border: none; margin-bottom: 12px;
-    }
+    .btn-hero { width: 100%; padding: 16px; border-radius: 18px; font-weight: 800; font-size: 15px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; border: none; margin-bottom: 12px; }
     .btn-hero-admin { background: linear-gradient(135deg, var(--primary), var(--primary-hover)); color: white; box-shadow: 0 10px 25px rgba(255, 107, 0, 0.25); }
-    .btn-hero-admin:hover { transform: translateY(-3px); }
     .btn-hero-siswa { background: rgba(255, 255, 255, 0.9); color: var(--text); border: 2px solid var(--border); }
-    .btn-hero-siswa:hover { background: #FFF; border-color: var(--primary); color: var(--primary); transform: translateY(-3px); }
 
-    /* MAIN APP */
-    .app-container { max-width: 950px; margin: 20px auto; background: var(--card-bg); border-radius: 24px; padding: 25px; box-shadow: var(--shadow); border: 1px solid var(--border); display: none; }
+    /* MAIN APP CONTAINER */
+    .app-container { max-width: 1200px; margin: 20px auto; background: var(--card-bg); border-radius: 24px; padding: 25px; box-shadow: var(--shadow); border: 1px solid var(--border); display: none; }
 
     .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.4); backdrop-filter: blur(8px); z-index: 10000; display: none; align-items: center; justify-content: center; }
-    .modal-card { background: white; border-radius: 24px; padding: 30px; width: 90%; max-width: 380px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); position: relative; }
+    .modal-card { background: white; border-radius: 24px; padding: 30px; width: 90%; max-width: 400px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
 
-    .marquee-wrapper { background: linear-gradient(135deg, var(--primary), var(--accent)); color: white; padding: 12px 20px; border-radius: 16px; font-weight: 600; font-size: 14px; display: flex; align-items: center; gap: 12px; margin-bottom: 25px; }
-    .marquee { overflow: hidden; white-space: nowrap; width: 100%; }
-    .marquee p { display: inline-block; animation: marquee 18s linear infinite; }
-    @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
-
-    .header-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; flex-wrap: wrap; gap: 10px; }
-    .brand-title { font-size: 22px; font-weight: 800; display: flex; align-items: center; gap: 10px; }
+    .header-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
+    .brand-title { font-size: 22px; font-weight: 800; display: flex; align-items: center; gap: 10px; color: var(--text); }
     .brand-title i { color: var(--primary); }
     .time-badge { background: var(--primary-light); color: var(--primary); padding: 8px 16px; border-radius: 30px; font-weight: 700; font-size: 13px; }
 
@@ -86,31 +66,29 @@
     .view-section { display: none; }
     .view-section.active { display: block; }
 
-    /* PILIH HARI TAB & CARDS */
     .day-selector-bar { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 20px; }
     .day-chip { padding: 10px 18px; background: #F0F0F5; border-radius: 12px; font-weight: 700; font-size: 13px; color: var(--text-muted); cursor: pointer; border: 2px solid transparent; white-space: nowrap; }
     .day-chip.active { background: var(--primary-light); color: var(--primary); border-color: var(--primary); }
 
-    .time-info-card { background: #FFF8F3; border: 1px dashed var(--primary); padding: 14px; border-radius: 14px; font-size: 13px; margin-bottom: 20px; display: flex; gap: 15px; flex-wrap: wrap; }
-    .time-info-item { display: flex; align-items: center; gap: 8px; font-weight: 600; }
+    /* LAYOUT ADMIN 4 KOLOM BERDAMPINGAN */
+    .admin-4col-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-top: 15px; }
+    @media (max-width: 992px) { .admin-4col-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 576px) { .admin-4col-grid { grid-template-columns: 1fr; } }
 
-    /* DRAG & DROP & BOXES */
-    .admin-grid-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
-    @media (max-width: 768px) { .admin-grid-layout { grid-template-columns: 1fr; } }
+    .col-box { background: #F9FAFB; border: 2px dashed #D1D5DB; border-radius: 18px; padding: 15px; min-height: 350px; display: flex; flex-direction: column; transition: background 0.2s, border-color 0.2s; }
+    .col-box.drag-over { background: #FFE8D6 !important; border-color: var(--primary) !important; border-style: solid !important; }
+    .col-header { font-weight: 800; font-size: 14px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
 
-    .fase-box-container { background: #F9FAFB; border: 2px dashed var(--border); border-radius: 18px; padding: 15px; }
-    .fase-box-header { display: flex; justify-content: space-between; align-items: center; font-weight: 800; font-size: 14px; margin-bottom: 12px; color: var(--text); }
-    .fase-scroll-list { max-height: 220px; overflow-y: auto; padding-right: 5px; min-height: 120px; }
+    .card-list { flex: 1; overflow-y: auto; max-height: 400px; display: flex; flex-direction: column; gap: 10px; padding-right: 2px; }
 
-    .draggable-card { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 10px 14px; margin-bottom: 8px; font-weight: 700; font-size: 13px; cursor: grab; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.03); user-select: none; }
-    .draggable-card:active { cursor: grabbing; opacity: 0.6; }
-    .draggable-card .delete-btn { color: #D93025; cursor: pointer; padding: 4px; }
+    .draggable-card { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 12px; font-weight: 700; font-size: 13px; cursor: grab; box-shadow: 0 2px 6px rgba(0,0,0,0.04); display: flex; flex-direction: column; gap: 8px; }
+    .draggable-card:active { cursor: grabbing; background: #FFF4EC; }
+    .card-top { display: flex; justify-content: space-between; align-items: center; }
+    .delete-btn { color: #EF4444; cursor: pointer; padding: 2px 6px; }
+    .quick-move-select { font-size: 11px; padding: 4px 6px; border-radius: 8px; border: 1px solid #D1D5DB; background: #F3F4F6; color: #374151; font-weight: 600; }
 
-    .dropzone-shift { background: #FFF8F3; border: 2px dashed var(--primary); border-radius: 18px; padding: 15px; min-height: 160px; }
-    .dropzone-shift.drag-over { background: #FFE8D6; border-style: solid; }
-
-    /* MASTER OVERRIDE BADGE */
-    .master-panel { background: #E8F0FE; border: 1px solid #1A73E8; padding: 12px 16px; border-radius: 14px; font-size: 13px; color: #1967D2; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
+    .master-panel { background: #E8F0FE; border: 1px solid #1A73E8; padding: 14px 18px; border-radius: 16px; font-size: 13px; color: #1967D2; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+    .wa-btn { background: #25D366; color: white; border: none; padding: 10px 16px; border-radius: 12px; font-size: 13px; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(37,211,102,0.2); }
 
     .form-group { margin-bottom: 15px; text-align: left; }
     label { font-weight: 700; font-size: 13px; margin-bottom: 6px; display: block; }
@@ -128,7 +106,7 @@
     <div class="hero-icon"><i class="fa-solid fa-notes-medical"></i></div>
     <h1 class="hero-title">PIKET UKS PMR</h1>
     <p class="hero-subtitle">Portal Presensi & Jadwal Piket Digital</p>
-    <button class="btn-hero btn-hero-admin" onclick="bukaModalLogin()"><i class="fa-solid fa-user-shield"></i> Login Admin</button>
+    <button class="btn-hero btn-hero-admin" onclick="bukaModalLogin()"><i class="fa-solid fa-user-shield"></i> Login Admin / PJ</button>
     <button class="btn-hero btn-hero-siswa" onclick="masukPortalSiswa()"><i class="fa-solid fa-calendar-days"></i> Lihat Jadwal Piket</button>
   </div>
 </div>
@@ -137,25 +115,31 @@
 <div class="modal-overlay" id="modalLogin">
   <div class="modal-card">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-      <h3 style="font-weight: 800; font-size: 18px;">Login Admin</h3>
+      <h3 style="font-weight: 800; font-size: 18px;">Login Admin / PJ Hari</h3>
       <i class="fa-solid fa-xmark" style="cursor: pointer; font-size: 20px; color: var(--text-muted);" onclick="tutupModalLogin()"></i>
     </div>
-    <div class="form-group"><label>Username</label><input type="text" id="admUser" placeholder="Username"></div>
-    <div class="form-group"><label>Password</label><input type="password" id="admPass" placeholder="Password"></div>
+    <div class="form-group"><label>Username</label><input type="text" id="admUser" placeholder="Username PJ"></div>
+    <div class="form-group"><label>Password</label><input type="password" id="admPass" placeholder="Password PJ"></div>
     <button onclick="prosesLoginAdmin()" class="btn-aesthetic"><i class="fa-solid fa-right-to-bracket"></i> Masuk Sekarang</button>
+    
+    <div style="margin-top: 18px; text-align: center;">
+      <a href="https://wa.me/6282288861606?text=Halo%20Master%20Admin,%20saya%20PJ%20PMR%20lupa%20password%20login" target="_blank" class="wa-btn">
+        <i class="fa-brands fa-whatsapp fa-lg"></i> Bantuan Lupa Password
+      </a>
+    </div>
   </div>
 </div>
 
 <!-- MAIN DASHBOARD APP -->
 <div class="app-container" id="mainApp">
-  <div class="marquee-wrapper">
-    <i class="fa-solid fa-bullhorn"></i>
-    <div class="marquee"><p id="runningText">Selamat Datang di Portal Piket UKS PMR • Tetap Jaga Kebersihan & Kedisiplinan Tim PMR!</p></div>
-  </div>
-
   <div class="header-bar">
     <div class="brand-title"><i class="fa-solid fa-kit-medical"></i> PIKET UKS PMR</div>
-    <div class="time-badge" id="clockInfo"><i class="fa-regular fa-clock"></i> --:--:--</div>
+    <div style="display: flex; gap: 10px; align-items: center;">
+      <a href="https://wa.me/6282288861606?text=Halo%20Master%20Admin" target="_blank" class="wa-btn" style="padding: 8px 12px; font-size: 12px;">
+        <i class="fa-brands fa-whatsapp fa-lg"></i> Hubungi Master
+      </a>
+      <div class="time-badge" id="clockInfo"><i class="fa-regular fa-clock"></i> --:--:--</div>
+    </div>
   </div>
 
   <div class="nav-tabs">
@@ -166,7 +150,6 @@
 
   <!-- VIEW SISWA -->
   <div id="view-siswa" class="view-section active">
-    <!-- BAR PILIH HARI -->
     <div class="day-selector-bar">
       <div class="day-chip active" onclick="pilihHari('Senin', this)">Senin</div>
       <div class="day-chip" onclick="pilihHari('Selasa', this)">Selasa</div>
@@ -175,27 +158,17 @@
       <div class="day-chip" onclick="pilihHari('Jumat', this)">Jumat</div>
     </div>
 
-    <!-- TANGGAL & CARDS DURASI WAKTU -->
     <div style="background: white; border: 1px solid var(--border); border-radius: 14px; padding: 12px 16px; margin-bottom: 15px; font-weight: 700; font-size: 14px; color: var(--primary);">
-      <i class="fa-regular fa-calendar-check"></i> Tanggal: <span id="currentDateDisplay">-</span>
-    </div>
-
-    <div class="time-info-card" id="timeInfoBox">
-      <div class="time-info-item"><i class="fa-solid fa-sun" style="color:var(--primary)"></i> <b>Shift 1:</b> <span id="txtShift1">09:05 - 09:35 WIB</span></div>
-      <div class="time-info-item"><i class="fa-solid fa-cloud-sun" style="color:var(--accent)"></i> <b>Shift 2:</b> <span id="txtShift2">12:15 - 13:00 WIB</span></div>
-    </div>
-
-    <div style="background: #FFF4EC; border: 1px solid var(--primary-light); padding: 14px; border-radius: 14px; font-size: 13px; font-weight: 600; color: var(--primary); margin-bottom: 20px;">
-      <i class="fa-solid fa-circle-info fa-lg"></i> <span id="shiftTextInfo">Memeriksa jadwal shift...</span>
+      <i class="fa-regular fa-calendar-check"></i> Tanggal Hari Ini: <span id="currentDateDisplay">-</span>
     </div>
 
     <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 12px;">Petugas Piket Hari <span id="lblSelectedDay">Senin</span></h3>
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;" id="siswaGridContainer">
       <div style="background: white; border: 1px solid var(--border); border-radius: 16px; padding: 15px;">
         <h4 style="color: var(--primary); margin-bottom: 10px; font-size: 14px;"><i class="fa-solid fa-sun"></i> Shift 1 (Istirahat Pertama)</h4>
         <div id="listShift1Siswa" style="font-size: 13px; font-weight: 600;">- Memuat -</div>
       </div>
-      <div style="background: white; border: 1px solid var(--border); border-radius: 16px; padding: 15px;">
+      <div style="background: white; border: 1px solid var(--border); border-radius: 16px; padding: 15px;" id="siswaShift2Box">
         <h4 style="color: var(--accent); margin-bottom: 10px; font-size: 14px;"><i class="fa-solid fa-cloud-sun"></i> Shift 2 (Istirahat Kedua)</h4>
         <div id="listShift2Siswa" style="font-size: 13px; font-weight: 600;">- Memuat -</div>
       </div>
@@ -207,7 +180,7 @@
     <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 15px;">Upload Foto Bukti Piket</h3>
     
     <div id="masterTestingBadge" class="master-panel" style="display: none;">
-      <span><i class="fa-solid fa-flask"></i> <b>Master Mode Active:</b> Override Form Diaktifkan oleh Master Admin.</span>
+      <span><i class="fa-solid fa-flask"></i> <b>Master Mode Active:</b> Form Bukti Piket Terbuka Penuh 24/7.</span>
     </div>
 
     <form id="formPiket">
@@ -227,21 +200,26 @@
     </form>
   </div>
 
-  <!-- VIEW ADMIN -->
+  <!-- VIEW ADMIN PANEL -->
   <div id="view-admin" class="view-section">
-    <div style="background: var(--primary-light); padding: 16px; border-radius: 16px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center;">
+    <div style="background: var(--primary-light); padding: 16px; border-radius: 16px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
       <div>
         <h4 id="adminWelcome" style="color: var(--primary); font-weight: 800;">Selamat Datang Admin</h4>
         <p id="adminRole" style="font-size: 12px; color: var(--text-muted);"></p>
       </div>
-      <button onclick="logoutAdmin()" style="background: #FCE8E6; color: #D93025; border: none; padding: 8px 14px; border-radius: 10px; font-weight: 700; cursor: pointer;">Logout</button>
+      <div style="display: flex; gap: 8px;">
+        <button onclick="bukaModalGantiPass()" style="background: #E8F0FE; color: #1A73E8; border: none; padding: 8px 14px; border-radius: 10px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+          <i class="fa-solid fa-key"></i> Ganti Password
+        </button>
+        <button onclick="logoutAdmin()" style="background: #FCE8E6; color: #D93025; border: none; padding: 8px 14px; border-radius: 10px; font-weight: 700; cursor: pointer;">Logout</button>
+      </div>
     </div>
 
-    <!-- MASTER OVERRIDE BUTTON (HANYA MUNCUL DI ID ADMIN = 1) -->
+    <!-- MASTER OVERRIDE PANEL (KHUSUS MASTER ADMIN ID = 1) -->
     <div id="masterOverrideBox" class="master-panel" style="display: none;">
       <div>
         <h5 style="font-weight: 800;"><i class="fa-solid fa-crown"></i> Control Master Admin</h5>
-        <p style="font-size: 11px; opacity: 0.8;">Buka kunci form piket kapan saja untuk testing.</p>
+        <p style="font-size: 11px; opacity: 0.8;">Buka Form Piket tiap hari kapan saja tanpa batas jam.</p>
       </div>
       <button onclick="toggleMasterOverride()" id="btnMasterOverride" style="background: #1A73E8; color: white; border: none; padding: 8px 14px; border-radius: 8px; font-weight: 700; cursor: pointer;">
         Buka Lock Form (Testing: OFF)
@@ -257,40 +235,74 @@
       <div class="day-chip" onclick="pilihHariAdmin('Jumat', this)">Atur Jumat</div>
     </div>
 
-    <!-- Form Tambah Anggota -->
+    <!-- Tambah Anggota Baru -->
     <div style="background: #FDFDFD; border: 1px solid var(--border); padding: 15px; border-radius: 16px; margin-bottom: 20px;">
       <h4 style="font-size: 14px; font-weight: 800; margin-bottom: 10px;">+ Tambah Anggota PMR Baru</h4>
-      <form id="formTambahAnggota" style="display: flex; gap: 10px;">
-        <input type="text" id="namaBaru" placeholder="Nama Lengkap Petugas" required style="flex: 2;">
-        <select id="faseBaru" style="flex: 1;"><option value="E">Fase E</option><option value="F">Fase F</option></select>
-        <button type="submit" class="btn-aesthetic" style="width: auto; padding: 0 18px;">Simpan</button>
+      <form id="formTambahAnggota" style="display: flex; gap: 10px; flex-wrap: wrap;">
+        <input type="text" id="namaBaru" placeholder="Nama Lengkap Petugas" required style="flex: 2; min-width: 200px;">
+        <select id="faseBaru" style="flex: 1; min-width: 100px;"><option value="E">Fase E</option><option value="F">Fase F</option></select>
+        <button type="submit" class="btn-aesthetic" style="width: auto; padding: 0 20px;">Simpan</button>
       </form>
     </div>
 
-    <!-- SCROLLABLE BOX ANGGOTA FASE E & F -->
-    <h4 style="font-size: 14px; font-weight: 800; margin-bottom: 10px;"><i class="fa-solid fa-hand-pointer"></i> Drag Anggota ke Shift Hari <span id="lblAdminDay">Senin</span></h4>
-    <div class="admin-grid-layout">
-      <div class="fase-box-container" ondrop="dropToUnassigned(event)" ondragover="allowDrop(event)">
-        <div class="fase-box-header"><span><i class="fa-solid fa-user-group"></i> Unassigned Fase E</span><span id="countE">0</span></div>
-        <div class="fase-scroll-list" id="boxFaseE"></div>
-      </div>
-      <div class="fase-box-container" ondrop="dropToUnassigned(event)" ondragover="allowDrop(event)">
-        <div class="fase-box-header"><span><i class="fa-solid fa-user-group"></i> Unassigned Fase F</span><span id="countF">0</span></div>
-        <div class="fase-scroll-list" id="boxFaseF"></div>
-      </div>
-    </div>
+    <!-- 4 KOLOM BERDAMPINGAN (E, F, Shift 1, Shift 2) -->
+    <h4 style="font-size: 14px; font-weight: 800; margin-bottom: 5px;">
+      <i class="fa-solid fa-hand-pointer"></i> Atur Jadwal Hari <span id="lblAdminDay" style="color: var(--primary);">Senin</span>
+    </h4>
+    <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 15px;">
+      *Tarik kartu ke kolom tujuan atau gunakan menu pilihan cepat di kartu.
+    </p>
 
-    <!-- DROPZONES SHIFT -->
-    <div class="admin-grid-layout">
-      <div class="dropzone-shift" id="shift1Zone" ondrop="dropToShift(event, 1)" ondragover="allowDrop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
-        <h4 style="color: var(--primary); font-size: 14px; font-weight: 800; margin-bottom: 10px;"><i class="fa-solid fa-sun"></i> Shift 1 (Drop Di Sini)</h4>
-        <div id="shift1List"></div>
+    <div class="admin-4col-grid">
+      <!-- Kolom 1: Fase E -->
+      <div class="col-box" id="boxContainerE" ondragover="allowDrop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)" ondrop="dropToUnassigned(event)">
+        <div class="col-header" style="color: #4B5563;">
+          <span><i class="fa-solid fa-users"></i> Unassigned E</span>
+          <span id="countE" style="font-size: 12px; background: #E5E7EB; padding: 2px 8px; border-radius: 10px;">0</span>
+        </div>
+        <div class="card-list" id="boxFaseE"></div>
       </div>
-      <div class="dropzone-shift" id="shift2Zone" ondrop="dropToShift(event, 2)" ondragover="allowDrop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
-        <h4 style="color: var(--accent); font-size: 14px; font-weight: 800; margin-bottom: 10px;"><i class="fa-solid fa-cloud-sun"></i> Shift 2 (Drop Di Sini)</h4>
-        <div id="shift2List"></div>
+
+      <!-- Kolom 2: Fase F -->
+      <div class="col-box" id="boxContainerF" ondragover="allowDrop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)" ondrop="dropToUnassigned(event)">
+        <div class="col-header" style="color: #4B5563;">
+          <span><i class="fa-solid fa-users"></i> Unassigned F</span>
+          <span id="countF" style="font-size: 12px; background: #E5E7EB; padding: 2px 8px; border-radius: 10px;">0</span>
+        </div>
+        <div class="card-list" id="boxFaseF"></div>
+      </div>
+
+      <!-- Kolom 3: Shift 1 -->
+      <div class="col-box" id="shift1Zone" style="background: #FFF8F3; border-color: var(--primary);" ondragover="allowDrop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)" ondrop="dropToShift(event, 1)">
+        <div class="col-header" style="color: var(--primary);">
+          <span><i class="fa-solid fa-sun"></i> Shift 1</span>
+          <span id="countS1" style="font-size: 12px; background: var(--primary-light); padding: 2px 8px; border-radius: 10px;">0</span>
+        </div>
+        <div class="card-list" id="shift1List"></div>
+      </div>
+
+      <!-- Kolom 4: Shift 2 (Hidden saat Jumat) -->
+      <div class="col-box" id="shift2Zone" style="background: #FFFBF0; border-color: var(--accent);" ondragover="allowDrop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)" ondrop="dropToShift(event, 2)">
+        <div class="col-header" style="color: var(--accent);">
+          <span><i class="fa-solid fa-cloud-sun"></i> Shift 2</span>
+          <span id="countS2" style="font-size: 12px; background: #FEF3C7; padding: 2px 8px; border-radius: 10px;">0</span>
+        </div>
+        <div class="card-list" id="shift2List"></div>
       </div>
     </div>
+  </div>
+</div>
+
+<!-- MODAL GANTI PASSWORD ADMIN -->
+<div class="modal-overlay" id="modalGantiPass">
+  <div class="modal-card">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+      <h3 style="font-weight: 800; font-size: 18px;">Ganti Password Admin</h3>
+      <i class="fa-solid fa-xmark" style="cursor: pointer; font-size: 20px; color: var(--text-muted);" onclick="tutupModalGantiPass()"></i>
+    </div>
+    <div class="form-group"><label>Password Lama</label><input type="password" id="passLama" placeholder="Password saat ini"></div>
+    <div class="form-group"><label>Password Baru</label><input type="password" id="passBaru" placeholder="Password baru"></div>
+    <button onclick="prosesGantiPassword()" class="btn-aesthetic"><i class="fa-solid fa-save"></i> Simpan Password Baru</button>
   </div>
 </div>
 
@@ -305,16 +317,8 @@
   let allMembers = [];
   let selectedHari = 'Senin';
   let selectedAdminHari = 'Senin';
+  let draggedMemberId = null;
 
-  const scheduleTimes = {
-    'Senin': { s1: '09:05 - 09:35 WIB', s2: '12:15 - 13:00 WIB' },
-    'Selasa': { s1: '09:20 - 09:50 WIB', s2: '11:50 - 12:50 WIB' },
-    'Rabu': { s1: '09:20 - 09:50 WIB', s2: '11:50 - 12:50 WIB' },
-    'Kamis': { s1: '09:20 - 09:50 WIB', s2: '11:50 - 12:50 WIB' },
-    'Jumat': { s1: '09:00 - 09:40 WIB', s2: 'Tidak Ada (Jumat Taqwa)' }
-  };
-
-  // Clock & Shift Realtime Check
   setInterval(() => {
     const d = new Date();
     document.getElementById('clockInfo').innerHTML = `<i class="fa-regular fa-clock"></i> ` + d.toLocaleTimeString('id-ID');
@@ -329,13 +333,11 @@
   function masukPortalSiswa() {
     document.getElementById('welcomeScreen').style.display = 'none';
     document.getElementById('mainApp').style.display = 'block';
-    
     updateDateDisplay();
 
-    // Default hari ini
     const daysArr = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
     const today = daysArr[new Date().getDay()];
-    if(scheduleTimes[today]) selectedHari = today;
+    if(['Senin','Selasa','Rabu','Kamis','Jumat'].includes(today)) selectedHari = today;
     
     updateUIHariSiswa();
     muatDataSiswa();
@@ -343,6 +345,8 @@
 
   function bukaModalLogin() { document.getElementById('modalLogin').style.display = 'flex'; }
   function tutupModalLogin() { document.getElementById('modalLogin').style.display = 'none'; }
+  function bukaModalGantiPass() { document.getElementById('modalGantiPass').style.display = 'flex'; }
+  function tutupModalGantiPass() { document.getElementById('modalGantiPass').style.display = 'none'; }
 
   async function prosesLoginAdmin() {
     const u = document.getElementById('admUser').value;
@@ -363,7 +367,6 @@
     document.getElementById('adminWelcome').innerText = `Selamat Datang, ${data.nama}`;
     document.getElementById('adminRole').innerText = `Jabatan: ${data.jabatan} (@${data.username})`;
     
-    // Cek jika ID Admin = 1 (Master Admin)
     if(data.id === 1 || data.id === "1") {
       document.getElementById('masterOverrideBox').style.display = 'flex';
     } else {
@@ -372,6 +375,33 @@
 
     switchTab('admin', document.getElementById('tabAdminBtn'));
     muatKelolaAdmin();
+  }
+
+  async function prosesGantiPassword() {
+    const passLama = document.getElementById('passLama').value;
+    const passBaru = document.getElementById('passBaru').value;
+
+    if(!passLama || !passBaru) {
+      alert("Harap isi password lama dan password baru!");
+      return;
+    }
+
+    if(passLama !== currentAdminSession.password) {
+      alert("Password lama yang kamu masukkan salah!");
+      return;
+    }
+
+    const { error } = await sb.from('admins').update({ password: passBaru }).eq('id', currentAdminSession.id);
+
+    if(error) {
+      alert("Gagal mengubah password: " + error.message);
+    } else {
+      alert("Password berhasil diperbarui! Gunakan password baru ini untuk login berikutnya.");
+      currentAdminSession.password = passBaru;
+      tutupModalGantiPass();
+      document.getElementById('passLama').value = '';
+      document.getElementById('passBaru').value = '';
+    }
   }
 
   function toggleMasterOverride() {
@@ -383,12 +413,10 @@
       btn.innerText = "Lock Form (Testing: ON)";
       btn.style.background = "#D93025";
       badge.style.display = 'flex';
-      alert("Master Override Aktif! Form Bukti Piket sekarang terbuka penuh untuk testing.");
     } else {
       btn.innerText = "Buka Lock Form (Testing: OFF)";
       btn.style.background = "#1A73E8";
       badge.style.display = 'none';
-      alert("Master Override Dinonaktifkan.");
     }
     cekAktifShift();
   }
@@ -422,13 +450,26 @@
     document.querySelectorAll('#view-admin .day-chip').forEach(c => c.classList.remove('active'));
     el.classList.add('active');
     document.getElementById('lblAdminDay').innerText = hari;
+
+    // KONTROL KHUSUS HARI JUMAT
+    if(hari === 'Jumat') {
+      document.getElementById('shift2Zone').style.display = 'none';
+    } else {
+      document.getElementById('shift2Zone').style.display = 'flex';
+    }
+
     renderAdminBoxes();
   }
 
   function updateUIHariSiswa() {
     document.getElementById('lblSelectedDay').innerText = selectedHari;
-    document.getElementById('txtShift1').innerText = scheduleTimes[selectedHari].s1;
-    document.getElementById('txtShift2').innerText = scheduleTimes[selectedHari].s2;
+    if(selectedHari === 'Jumat') {
+      document.getElementById('siswaShift2Box').style.display = 'none';
+      document.getElementById('siswaGridContainer').style.gridTemplateColumns = '1fr';
+    } else {
+      document.getElementById('siswaShift2Box').style.display = 'block';
+      document.getElementById('siswaGridContainer').style.gridTemplateColumns = '1fr 1fr';
+    }
   }
 
   function cekAktifShift() {
@@ -444,16 +485,10 @@
     if(isMasterOverride) isShiftOpen = true;
 
     const selectPiket = document.getElementById('selectNamaPiket');
-    if (isShiftOpen) {
-      document.getElementById('shiftTextInfo').innerText = isMasterOverride ? "JAM SHIFT AKTIF (Master Override On)" : "Jam Shift Sedang Berlangsung!";
-      selectPiket.disabled = false;
-    } else {
-      document.getElementById('shiftTextInfo').innerText = "Di luar jam piket (Form Terkunci 🔒)";
-      selectPiket.disabled = true;
-    }
+    selectPiket.disabled = !isShiftOpen;
   }
 
-  // ================= DATA & RENDER =================
+  // DATA FETCHING & RENDER
   async function muatDataSiswa() {
     const { data } = await sb.from('members').select('*');
     if(data) {
@@ -494,36 +529,57 @@
     const listS2 = document.getElementById('shift2List');
 
     boxE.innerHTML = ''; boxF.innerHTML = ''; listS1.innerHTML = ''; listS2.innerHTML = '';
-    let countE = 0, countF = 0;
+    let countE = 0, countF = 0, countS1 = 0, countS2 = 0;
 
     allMembers.forEach(m => {
       const card = document.createElement('div');
       card.className = 'draggable-card';
       card.draggable = true;
       card.id = `member-${m.id}`;
-      
-      // Fixed Drag Handler
+
+      // EVENT HANDLERS DRAG
       card.addEventListener('dragstart', (e) => {
+        draggedMemberId = m.id;
         e.dataTransfer.setData("text/plain", m.id.toString());
+        e.dataTransfer.effectAllowed = "move";
       });
 
-      card.innerHTML = `<span>${m.nama}</span> <i class="fa-solid fa-trash delete-btn" onclick="hapusAnggota(${m.id}, '${m.nama}')"></i>`;
+      const isShift2Avail = selectedAdminHari !== 'Jumat';
+
+      card.innerHTML = `
+        <div class="card-top">
+          <span>${m.nama} <small style="color:#888;">(Fase ${m.fase})</small></span>
+          <i class="fa-solid fa-trash delete-btn" onclick="hapusAnggota(${m.id}, '${m.nama}')"></i>
+        </div>
+        <select class="quick-move-select" onchange="quickPindahShift(${m.id}, this.value)">
+          <option value="0" ${m.shift === 0 || m.hari !== selectedAdminHari ? 'selected' : ''}>Unassigned</option>
+          <option value="1" ${m.shift === 1 && m.hari === selectedAdminHari ? 'selected' : ''}>Shift 1</option>
+          ${isShift2Avail ? `<option value="2" ${m.shift === 2 && m.hari === selectedAdminHari ? 'selected' : ''}>Shift 2</option>` : ''}
+        </select>
+      `;
 
       if(m.hari === selectedAdminHari && m.shift === 1) {
-        listS1.appendChild(card);
-      } else if(m.hari === selectedAdminHari && m.shift === 2) {
-        listS2.appendChild(card);
+        listS1.appendChild(card); countS1++;
+      } else if(m.hari === selectedAdminHari && m.shift === 2 && isShift2Avail) {
+        listS2.appendChild(card); countS2++;
       } else {
         if(m.fase === 'E') { boxE.appendChild(card); countE++; }
         else { boxF.appendChild(card); countF++; }
       }
     });
 
-    document.getElementById('countE').innerText = `${countE} Anggota`;
-    document.getElementById('countF').innerText = `${countF} Anggota`;
+    document.getElementById('countE').innerText = countE;
+    document.getElementById('countF').innerText = countF;
+    document.getElementById('countS1').innerText = countS1;
+    document.getElementById('countS2').innerText = countS2;
   }
 
-  // Tambah Anggota
+  async function quickPindahShift(memberId, val) {
+    const shiftNum = parseInt(val);
+    await sb.from('members').update({ hari: selectedAdminHari, shift: shiftNum }).eq('id', memberId);
+    muatKelolaAdmin();
+  }
+
   document.getElementById('formTambahAnggota').onsubmit = async (e) => {
     e.preventDefault();
     const nama = document.getElementById('namaBaru').value;
@@ -541,46 +597,42 @@
     }
   }
 
-  // ================= DRAG & DROP HANDLERS (PERBAIKAN FITUR DROP) =================
-  function allowDrop(e) { 
-    e.preventDefault(); 
-  }
-  function dragEnter(e) { 
-    e.preventDefault(); 
-    e.currentTarget.classList.add('drag-over'); 
-  }
-  function dragLeave(e) { 
-    e.currentTarget.classList.remove('drag-over'); 
-  }
+  // DRAG & DROP EVENT FIX HANDLERS
+  function allowDrop(e) { e.preventDefault(); }
+  function dragEnter(e) { e.preventDefault(); e.currentTarget.classList.add('drag-over'); }
+  function dragLeave(e) { e.currentTarget.classList.remove('drag-over'); }
 
   async function dropToShift(e, shiftNum) {
     e.preventDefault();
     e.currentTarget.classList.remove('drag-over');
-    const memberId = e.dataTransfer.getData("text/plain");
+    const memberId = e.dataTransfer.getData("text/plain") || draggedMemberId;
 
     if(memberId) {
       await sb.from('members').update({ hari: selectedAdminHari, shift: shiftNum }).eq('id', parseInt(memberId));
+      draggedMemberId = null;
       muatKelolaAdmin();
     }
   }
 
   async function dropToUnassigned(e) {
     e.preventDefault();
-    const memberId = e.dataTransfer.getData("text/plain");
+    e.currentTarget.classList.remove('drag-over');
+    const memberId = e.dataTransfer.getData("text/plain") || draggedMemberId;
 
     if(memberId) {
       await sb.from('members').update({ shift: 0 }).eq('id', parseInt(memberId));
+      draggedMemberId = null;
       muatKelolaAdmin();
     }
   }
 
-  // PHYSICS CANVAS BACKGROUND
+  // BACKGROUND PHYSICS
   const canvas = document.getElementById('physicsCanvas');
   const ctx = canvas.getContext('2d');
   function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
   window.addEventListener('resize', resizeCanvas); resizeCanvas();
 
-  const colors = ['#FF6B00', '#FFA800', '#FF8533', '#FFC266'];
+  const colors = ['#FF6B00', '#FFA800', '#FF8533'];
   class Ball {
     constructor(x, y, radius, color) {
       this.x = x; this.y = y; this.radius = radius; this.color = color;
@@ -593,10 +645,10 @@
     }
     draw() {
       ctx.beginPath(); ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-      ctx.fillStyle = this.color; ctx.globalAlpha = 0.3; ctx.fill(); ctx.globalAlpha = 1.0;
+      ctx.fillStyle = this.color; ctx.globalAlpha = 0.25; ctx.fill(); ctx.globalAlpha = 1.0;
     }
   }
-  const balls = Array.from({ length: 16 }, () => new Ball(Math.random() * canvas.width, Math.random() * canvas.height, Math.random() * 30 + 20, colors[Math.floor(Math.random() * colors.length)]));
+  const balls = Array.from({ length: 14 }, () => new Ball(Math.random() * canvas.width, Math.random() * canvas.height, Math.random() * 30 + 20, colors[Math.floor(Math.random() * colors.length)]));
   function animate() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     balls.forEach(b => { b.update(); b.draw(); });

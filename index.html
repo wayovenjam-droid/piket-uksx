@@ -1,13 +1,302 @@
-<!-- Masukkan CDN di bagian <head> seperti biasa -->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Piket UKS PMR - Official Portal</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link href="https://fonts.googleapis.com/css?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root {
+  --primary: #FF6B00;
+  --primary-hover: #E05D00;
+  --primary-light: #FFF4EC;
+  --accent: #FFA800;
+  --bg: #FAFAFC;
+  --card-bg: #FFFFFF;
+  --text: #2D3142;
+  --text-muted: #9C9EB9;
+  --border: #E5E7EB;
+  --shadow: 0 10px 30px rgba(255, 107, 0, 0.08);
+}
+* { box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; padding: 0; transition: all 0.2s ease; }
+body { background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
 
-<!-- [SELURUH KODE HTML & CSS KAMU TETAP DI SINI] -->
+/* WELCOME SCREEN */
+#welcomeScreen {
+  position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+  z-index: 9999; display: flex; align-items: center; justify-content: center;
+  background: radial-gradient(circle at center, #FFFFFF 0%, #FFF4EC 100%);
+  overflow: hidden;
+}
+#physicsCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+.hero-glass-card {
+  position: relative; z-index: 10; background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.8); padding: 40px 30px; border-radius: 32px;
+  box-shadow: 0 20px 50px rgba(255, 107, 0, 0.15); text-align: center; max-width: 420px;
+  width: 90%;
+}
+.hero-icon { width: 70px; height: 70px; background: linear-gradient(135deg, var(--primary), var(--accent)); color: white; border-radius: 22px; display: flex; align-items: center; justify-content: center; font-size: 32px; margin: 0 auto 20px; box-shadow: 0 10px 25px rgba(255, 107, 0, 0.3); }
+.hero-title { font-size: 26px; font-weight: 800; color: var(--text); margin-bottom: 8px; }
+.hero-subtitle { font-size: 14px; color: var(--text-muted); margin-bottom: 30px; font-weight: 600; }
+.btn-hero { width: 100%; padding: 16px; border-radius: 18px; font-weight: 800; font-size: 15px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; border: none; margin-bottom: 12px; }
+.btn-hero-admin { background: linear-gradient(135deg, var(--primary), var(--primary-hover)); color: white; box-shadow: 0 10px 25px rgba(255, 107, 0, 0.25); }
+.btn-hero-siswa { background: rgba(255, 255, 255, 0.9); color: var(--text); border: 2px solid var(--border); }
 
-<!-- PANGGIL FILE JS TERPISAH DI BAGIAN PALING BAWAH BODY -->
-<script src="js/config.js"></script>
-<script src="js/siswa.js"></script>
-<script src="js/piket.js"></script>
-<script src="js/admin.js"></script>
-<script src="js/background.js"></script>
+/* MAIN APP CONTAINER */
+.app-container { max-width: 1200px; margin: 20px auto; background: var(--card-bg); border-radius: 24px; padding: 25px; box-shadow: var(--shadow); border: 1px solid var(--border); display: none; }
+.modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.4); backdrop-filter: blur(8px); z-index: 10000; display: none; align-items: center; justify-content: center; }
+.modal-card { background: white; border-radius: 24px; padding: 30px; width: 90%; max-width: 400px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
+.header-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
+.brand-title { font-size: 22px; font-weight: 800; display: flex; align-items: center; gap: 10px; color: var(--text); }
+.brand-title i { color: var(--primary); }
+.time-badge { background: var(--primary-light); color: var(--primary); padding: 8px 16px; border-radius: 30px; font-weight: 700; font-size: 13px; }
+.nav-tabs { display: flex; gap: 10px; background: var(--primary-light); padding: 6px; border-radius: 16px; margin-bottom: 25px; }
+.tab-btn { flex: 1; padding: 12px; border: none; background: transparent; color: var(--text-muted); font-weight: 700; border-radius: 12px; cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+.tab-btn.active { background: var(--card-bg); color: var(--primary); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+.view-section { display: none; }
+.view-section.active { display: block; }
+.day-selector-bar { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 20px; }
+.day-chip { padding: 10px 18px; background: #F0F0F5; border-radius: 12px; font-weight: 700; font-size: 13px; color: var(--text-muted); cursor: pointer; border: 2px solid transparent; white-space: nowrap; }
+.day-chip.active { background: var(--primary-light); color: var(--primary); border-color: var(--primary); }
+
+/* LAYOUT ADMIN 4 KOLOM BERDAMPINGAN */
+.admin-4col-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-top: 15px; }
+@media (max-width: 992px) { .admin-4col-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 576px) { .admin-4col-grid { grid-template-columns: 1fr; } }
+.col-box {
+  background: #F9FAFB; border: 2px dashed #D1D5DB; border-radius: 18px; padding: 15px; min-height: 380px; display: flex; flex-direction: column; transition: all 0.15s ease-in-out;
+}
+.col-box.drag-over {
+  background: #FFE8D6 !important; border-color: var(--primary) !important; border-style: solid !important; box-shadow: 0 0 15px rgba(255, 107, 0, 0.25); transform: scale(1.01);
+}
+.col-header { font-weight: 800; font-size: 14px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; pointer-events: none; }
+.card-list { flex: 1; overflow-y: auto; max-height: 400px; display: flex; flex-direction: column; gap: 10px; padding: 4px; pointer-events: none; }
+.draggable-card { pointer-events: auto; }
+.draggable-card {
+  background: white; border: 1px solid var(--border); border-radius: 12px; padding: 12px; font-weight: 700; font-size: 13px; cursor: grab; box-shadow: 0 2px 6px rgba(0,0,0,0.04); display: flex; flex-direction: column; gap: 8px; user-select: none;
+}
+.draggable-card:active { cursor: grabbing; background: #FFF4EC; opacity: 0.6; }
+.card-top { display: flex; justify-content: space-between; align-items: center; }
+.delete-btn { color: #EF4444; cursor: pointer; padding: 2px 6px; }
+.quick-move-select { font-size: 11px; padding: 4px 6px; border-radius: 8px; border: 1px solid #D1D5DB; background: #F3F4F6; color: #374151; font-weight: 600; cursor: pointer; }
+.master-panel { background: #E8F0FE; border: 1px solid #1A73E8; padding: 14px 18px; border-radius: 16px; font-size: 13px; color: #1967D2; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+.wa-btn { background: #25D366; color: white; border: none; padding: 10px 16px; border-radius: 12px; font-size: 13px; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(37,211,102,0.2); }
+.form-group { margin-bottom: 15px; text-align: left; }
+label { font-weight: 700; font-size: 13px; margin-bottom: 6px; display: block; }
+input, select { width: 100%; padding: 12px 14px; border: 2px solid var(--border); border-radius: 12px; font-size: 14px; outline: none; }
+input:focus, select:focus { border-color: var(--primary); }
+.btn-aesthetic { background: linear-gradient(135deg, var(--primary), var(--primary-hover)); color: white; border: none; padding: 14px; border-radius: 14px; font-weight: 700; font-size: 14px; cursor: pointer; width: 100%; }
+</style>
+</head>
+<body>
+
+<!-- WELCOME SCREEN -->
+<div id="welcomeScreen">
+  <canvas id="physicsCanvas"></canvas>
+  <div class="hero-glass-card">
+    <div class="hero-icon"><i class="fa-solid fa-notes-medical"></i></div>
+    <h1 class="hero-title">PIKET UKS PMR</h1>
+    <p class="hero-subtitle">Portal Presensi & Jadwal Piket Digital</p>
+    <button class="btn-hero btn-hero-admin" onclick="bukaModalLogin()"><i class="fa-solid fa-user-shield"></i> Login Admin / PJ</button>
+    <button class="btn-hero btn-hero-siswa" onclick="masukPortalSiswa()"><i class="fa-solid fa-calendar-days"></i> Lihat Jadwal Piket</button>
+  </div>
+</div>
+
+<!-- MODAL LOGIN ADMIN -->
+<div class="modal-overlay" id="modalLogin">
+  <div class="modal-card">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+      <h3 style="font-weight: 800; font-size: 18px;">Login Admin / PJ Hari</h3>
+      <i class="fa-solid fa-xmark" style="cursor: pointer; font-size: 20px; color: var(--text-muted);" onclick="tutupModalLogin()"></i>
+    </div>
+    <div class="form-group"><label>Username</label><input type="text" id="admUser" placeholder="Username PJ"></div>
+    <div class="form-group"><label>Password</label><input type="password" id="admPass" placeholder="Password PJ"></div>
+    <button onclick="prosesLoginAdmin()" class="btn-aesthetic"><i class="fa-solid fa-right-to-bracket"></i> Masuk Sekarang</button>
+    <div style="margin-top: 18px; text-align: center;">
+      <a href="https://wa.me/6282288861606?text=Halo%20Master%20Admin,%20saya%20PJ%20PMR%20lupa%20password%20login" target="_blank" class="wa-btn">
+        <i class="fa-brands fa-whatsapp fa-lg"></i> Bantuan Lupa Password (WA)
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN DASHBOARD APP -->
+<div class="app-container" id="mainApp">
+  <div class="header-bar">
+    <div class="brand-title"><i class="fa-solid fa-kit-medical"></i> PIKET UKS PMR</div>
+    <div style="display: flex; gap: 10px; align-items: center;">
+      <a href="https://wa.me/6282288861606?text=Halo%20Master%20Admin" target="_blank" class="wa-btn" style="padding: 8px 12px; font-size: 12px;">
+        <i class="fa-brands fa-whatsapp fa-lg"></i> Hubungi Master
+      </a>
+      <div class="time-badge" id="clockInfo"><i class="fa-regular fa-clock"></i> --:--:--</div>
+    </div>
+  </div>
+
+  <div class="nav-tabs">
+    <button class="tab-btn active" id="tabSiswaBtn" onclick="switchTab('siswa', this)"><i class="fa-solid fa-calendar-day"></i> Jadwal</button>
+    <button class="tab-btn" onclick="switchTab('piket', this)"><i class="fa-solid fa-camera"></i> Bukti Piket</button>
+    <button class="tab-btn" id="tabAdminBtn" style="display:none;" onclick="switchTab('admin', this)"><i class="fa-solid fa-user-shield"></i> Panel Admin</button>
+  </div>
+
+  <!-- VIEW SISWA -->
+  <div id="view-siswa" class="view-section active">
+    <div class="day-selector-bar">
+      <div class="day-chip active" onclick="pilihHari('Senin', this)">Senin</div>
+      <div class="day-chip" onclick="pilihHari('Selasa', this)">Selasa</div>
+      <div class="day-chip" onclick="pilihHari('Rabu', this)">Rabu</div>
+      <div class="day-chip" onclick="pilihHari('Kamis', this)">Kamis</div>
+      <div class="day-chip" onclick="pilihHari('Jumat', this)">Jumat</div>
+    </div>
+    <div style="background: white; border: 1px solid var(--border); border-radius: 14px; padding: 12px 16px; margin-bottom: 15px; font-weight: 700; font-size: 14px; color: var(--primary);">
+      <i class="fa-regular fa-calendar-check"></i> Tanggal Hari Ini: <span id="currentDateDisplay">-</span>
+    </div>
+    <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 12px;">Petugas Piket Hari <span id="lblSelectedDay">Senin</span></h3>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;" id="siswaGridContainer">
+      <div style="background: white; border: 1px solid var(--border); border-radius: 16px; padding: 15px;">
+        <h4 style="color: var(--primary); margin-bottom: 10px; font-size: 14px;"><i class="fa-solid fa-sun"></i> Shift 1 (Istirahat Pertama)</h4>
+        <div id="listShift1Siswa" style="font-size: 13px; font-weight: 600;">- Memuat -</div>
+      </div>
+      <div style="background: white; border: 1px solid var(--border); border-radius: 16px; padding: 15px;" id="siswaShift2Box">
+        <h4 style="color: var(--accent); margin-bottom: 10px; font-size: 14px;"><i class="fa-solid fa-cloud-sun"></i> Shift 2 (Istirahat Kedua)</h4>
+        <div id="listShift2Siswa" style="font-size: 13px; font-weight: 600;">- Memuat -</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VIEW BUKTI PIKET -->
+  <div id="view-piket" class="view-section">
+    <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 15px;">Upload Foto Bukti Piket</h3>
+    <div id="masterTestingBadge" class="master-panel" style="display: none;">
+      <span><i class="fa-solid fa-flask"></i> <b>Master Mode Active:</b> Form Bukti Piket Terbuka Penuh 24/7.</span>
+    </div>
+    <form id="formPiket">
+      <div class="form-group">
+        <label>Nama Petugas Shift:</label>
+        <select id="selectNamaPiket" disabled required><option value="">-- Kunci Terbuka Saat Jam Shift --</option></select>
+      </div>
+      <div class="form-group">
+        <label>Kondisi UKS / Catatan:</label>
+        <input type="text" id="catatanPiket" placeholder="Contoh: UKS Rapih, Obat P3K Lengkap" required>
+      </div>
+      <div class="form-group">
+        <label>Foto Bukti Piket:</label>
+        <input type="file" id="fotoPiket" accept="image/*" required>
+      </div>
+      <button type="submit" class="btn-aesthetic"><i class="fa-solid fa-paper-plane"></i> Kirim Laporan Piket</button>
+    </form>
+  </div>
+
+  <!-- VIEW ADMIN PANEL -->
+  <div id="view-admin" class="view-section">
+    <div style="background: var(--primary-light); padding: 16px; border-radius: 16px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+      <div>
+        <h4 id="adminWelcome" style="color: var(--primary); font-weight: 800;">Selamat Datang Admin</h4>
+        <p id="adminRole" style="font-size: 12px; color: var(--text-muted);"></p>
+      </div>
+      <div style="display: flex; gap: 8px;">
+        <button onclick="bukaModalGantiPass()" style="background: #E8F0FE; color: #1A73E8; border: none; padding: 8px 14px; border-radius: 10px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+          <i class="fa-solid fa-key"></i> Ganti Pass
+        </button>
+        <button onclick="logoutAdmin()" style="background: #FCE8E6; color: #D93025; border: none; padding: 8px 14px; border-radius: 10px; font-weight: 700; cursor: pointer;">Logout</button>
+      </div>
+    </div>
+
+    <!-- MASTER OVERRIDE PANEL -->
+    <div id="masterOverrideBox" class="master-panel" style="display: none;">
+      <div>
+        <h5 style="font-weight: 800;"><i class="fa-solid fa-crown"></i> Control Master Admin</h5>
+        <p style="font-size: 11px; opacity: 0.8;">Buka Form Piket tiap hari kapan saja tanpa batas jam.</p>
+      </div>
+      <button onclick="toggleMasterOverride()" id="btnMasterOverride" style="background: #1A73E8; color: white; border: none; padding: 8px 14px; border-radius: 8px; font-weight: 700; cursor: pointer;">
+        Buka Lock Form (Testing: OFF)
+      </button>
+    </div>
+
+    <!-- PILIH HARI ADMIN -->
+    <div class="day-selector-bar">
+      <div class="day-chip active" onclick="pilihHariAdmin('Senin', this)">Atur Senin</div>
+      <div class="day-chip" onclick="pilihHariAdmin('Selasa', this)">Atur Selasa</div>
+      <div class="day-chip" onclick="pilihHariAdmin('Rabu', this)">Atur Rabu</div>
+      <div class="day-chip" onclick="pilihHariAdmin('Kamis', this)">Atur Kamis</div>
+      <div class="day-chip" onclick="pilihHariAdmin('Jumat', this)">Atur Jumat</div>
+    </div>
+
+    <!-- Tambah Anggota Baru -->
+    <div style="background: #FDFDFD; border: 1px solid var(--border); padding: 15px; border-radius: 16px; margin-bottom: 20px;">
+      <h4 style="font-size: 14px; font-weight: 800; margin-bottom: 10px;">+ Tambah Anggota PMR Baru</h4>
+      <form id="formTambahAnggota" style="display: flex; gap: 10px; flex-wrap: wrap;">
+        <input type="text" id="namaBaru" placeholder="Nama Lengkap Petugas" required style="flex: 2; min-width: 200px;">
+        <select id="faseBaru" style="flex: 1; min-width: 100px;"><option value="E">Fase E</option><option value="F">Fase F</option></select>
+        <button type="submit" class="btn-aesthetic" style="width: auto; padding: 0 20px;">Simpan</button>
+      </form>
+    </div>
+
+    <!-- 4 KOLOM BERDAMPINGAN -->
+    <h4 style="font-size: 14px; font-weight: 800; margin-bottom: 5px;">
+      <i class="fa-solid fa-hand-pointer"></i> Atur Jadwal Hari <span id="lblAdminDay" style="color: var(--primary);">Senin</span>
+    </h4>
+    <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 15px;">
+      *Tarik kartu ke kolom tujuan atau gunakan menu pilihan cepat di kartu.
+    </p>
+
+    <div class="admin-4col-grid">
+      <!-- Kolom 1: Fase E -->
+      <div class="col-box" id="boxContainerE" data-target-shift="0">
+        <div class="col-header" style="color: #4B5563;">
+          <span><i class="fa-solid fa-users"></i> Unassigned E</span>
+          <span id="countE" style="font-size: 12px; background: #E5E7EB; padding: 2px 8px; border-radius: 10px;">0</span>
+        </div>
+        <div class="card-list" id="boxFaseE"></div>
+      </div>
+      <!-- Kolom 2: Fase F -->
+      <div class="col-box" id="boxContainerF" data-target-shift="0">
+        <div class="col-header" style="color: #4B5563;">
+          <span><i class="fa-solid fa-users"></i> Unassigned F</span>
+          <span id="countF" style="font-size: 12px; background: #E5E7EB; padding: 2px 8px; border-radius: 10px;">0</span>
+        </div>
+        <div class="card-list" id="boxFaseF"></div>
+      </div>
+      <!-- Kolom 3: Shift 1 -->
+      <div class="col-box" id="shift1Zone" data-target-shift="1" style="background: #FFF8F3; border-color: var(--primary);">
+        <div class="col-header" style="color: var(--primary);">
+          <span><i class="fa-solid fa-sun"></i> Shift 1</span>
+          <span id="countS1" style="font-size: 12px; background: var(--primary-light); padding: 2px 8px; border-radius: 10px;">0</span>
+        </div>
+        <div class="card-list" id="shift1List"></div>
+      </div>
+      <!-- Kolom 4: Shift 2 -->
+      <div class="col-box" id="shift2Zone" data-target-shift="2" style="background: #FFFBF0; border-color: var(--accent);">
+        <div class="col-header" style="color: var(--accent);">
+          <span><i class="fa-solid fa-cloud-sun"></i> Shift 2</span>
+          <span id="countS2" style="font-size: 12px; background: #FEF3C7; padding: 2px 8px; border-radius: 10px;">0</span>
+        </div>
+        <div class="card-list" id="shift2List"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL GANTI PASSWORD ADMIN -->
+<div class="modal-overlay" id="modalGantiPass">
+  <div class="modal-card">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+      <h3 style="font-weight: 800; font-size: 18px;">Ganti Password Admin</h3>
+      <i class="fa-solid fa-xmark" style="cursor: pointer; font-size: 20px; color: var(--text-muted);" onclick="tutupModalGantiPass()"></i>
+    </div>
+    <div class="form-group"><label>Password Lama</label><input type="password" id="passLama" placeholder="Password saat ini"></div>
+    <div class="form-group"><label>Password Baru</label><input type="password" id="passBaru" placeholder="Password baru"></div>
+    <button onclick="prosesGantiPassword()" class="btn-aesthetic"><i class="fa-solid fa-save"></i> Simpan Password Baru</button>
+  </div>
+</div>
+
+<!-- FILE SCRIPT DIPISAH DENGAN URUTAN TERATUR -->
+<script src="config.js"></script>
+<script src="siswa.js"></script>
+<script src="piket.js"></script>
+<script src="admin.js"></script>
+<script src="background.js"></script>
 </body>
 </html>

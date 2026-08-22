@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Piket UKS PMR - Official System</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- Google Fonts & FontAwesome Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    :root {
+      --primary: #FF6B00;
+      --primary-hover: #E05D00;
+      --primary-light: #FFF4EC;
+      --accent: #FFA800;
+      --bg: #FAFAFC;
+      --card-bg: #FFFFFF;
+      --text: #2D3142;
+      --text-muted: #9C9EB9;
+      --border: #F0F0F5;
+      --shadow: 0 10px 30px rgba(255, 107, 0, 0.08);
+      --shadow-hover: 0 15px 35px rgba(255, 107, 0, 0.15);
+    }
+
+    * { box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; padding: 0; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+    body { background: var(--bg); color: var(--text); padding: 30px 15px; min-height: 100vh; }
+    
+    /* Subtle Animated Background Elements */
+    body::before {
+      content: ''; position: fixed; top: -100px; right: -100px; width: 350px; height: 350px;
+      background: radial-gradient(circle, rgba(255,107,0,0.12) 0%, rgba(255,255,255,0) 70%);
+      z-index: -1; animation: floatBg 8s infinite alternate ease-in-out;
+    }
+    @keyframes floatBg { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(-30px, 30px) scale(1.1); } }
+
+    .container { max-width: 950px; margin: 0 auto; background: var(--card-bg); border-radius: 24px; padding: 30px; box-shadow: var(--shadow); border: 1px solid var(--border); }
+
+    /* Aesthetic Running Text Header */
+    .marquee-wrapper {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: white; padding: 12px 20px; border-radius: 16px; font-weight: 600; font-size: 14px;
+      box-shadow: 0 8px 20px rgba(255, 107, 0, 0.25); display: flex; align-items: center; gap: 12px; margin-bottom: 25px;
+    }
+    .marquee { overflow: hidden; white-space: nowrap; width: 100%; }
+    .marquee p { display: inline-block; animation: marquee 18s linear infinite; }
+    @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+
+    /* Header Bar */
+    .header-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; flex-wrap: wrap; gap: 10px; }
+    .brand-title { font-size: 24px; font-weight: 800; color: var(--text); display: flex; align-items: center; gap: 10px; }
+    .brand-title i { color: var(--primary); font-size: 28px; }
+    .time-badge { background: var(--primary-light); color: var(--primary); padding: 8px 16px; border-radius: 30px; font-weight: 700; font-size: 13px; display: flex; align-items: center; gap: 8px; }
+
+    /* Animated Navigation Tabs */
+    .nav-tabs { display: flex; gap: 10px; background: var(--primary-light); padding: 6px; border-radius: 16px; margin-bottom: 30px; }
+    .tab-btn {
+      flex: 1; padding: 12px; border: none; background: transparent; color: var(--text-muted); font-weight: 700;
+      border-radius: 12px; cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .tab-btn.active { background: var(--card-bg); color: var(--primary); box-shadow: 0 4px 12px rgba(0,0,0,0.05); transform: translateY(-2px); }
+
+    /* View Sections Transitions */
+    .view-section { display: none; opacity: 0; transform: translateY(15px); }
+    .view-section.active { display: block; opacity: 1; transform: translateY(0); animation: fadeIn 0.4s ease forwards; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* Form UI Components */
+    .form-group { margin-bottom: 20px; }
+    label { font-weight: 700; font-size: 13px; color: var(--text); margin-bottom: 8px; display: block; }
+    input, select, textarea {
+      width: 100%; padding: 14px 16px; border: 2px solid var(--border); border-radius: 14px; font-size: 14px; background: #FFF; color: var(--text); outline: none;
+    }
+    input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(255, 107, 0, 0.1); }
+
+    button.btn-aesthetic {
+      background: linear-gradient(135deg, var(--primary), var(--primary-hover)); color: white;
+      border: none; padding: 14px 24px; border-radius: 14px; font-weight: 700; font-size: 14px; cursor: pointer;
+      box-shadow: 0 8px 20px rgba(255, 107, 0, 0.2); width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    button.btn-aesthetic:hover { transform: translateY(-3px); box-shadow: 0 12px 25px rgba(255, 107, 0, 0.3); }
+
+    /* Status Badges */
+    .status-badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 20px; font-weight: 700; font-size: 12px; }
+    .status-menunggu { background: #FFF9E6; color: #D97706; }
+    .status-acc { background: #E6F4EA; color: #1E8E3E; }
+    .status-ditolak { background: #FCE8E6; color: #D93025; }
+
+    /* Modern Table */
+    .table-container { overflow-x: auto; border-radius: 16px; border: 1px solid var(--border); margin-top: 20px; }
+    table { width: 100%; border-collapse: collapse; background: white; }
+    th { background: var(--primary-light); color: var(--primary); padding: 14px; text-align: left; font-size: 13px; font-weight: 700; }
+    td { padding: 14px; border-bottom: 1px solid var(--border); font-size: 13px; }
+
+    /* Shift Info Banner */
+    .shift-card {
+      background: linear-gradient(135deg, #FFF4EC, #FFFFFF); border: 2px solid var(--primary-light);
+      padding: 18px; border-radius: 16px; font-size: 14px; font-weight: 600; color: var(--primary); display: flex; align-items: center; gap: 12px; margin-bottom: 20px;
+    }
+
+    /* Drag & Drop Canvas Admin */
+    .grid-drag { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-top: 15px; }
+    .drag-box { background: var(--bg); border: 2px dashed #E0E0EC; border-radius: 16px; padding: 15px; min-height: 180px; }
+    .drag-item { background: white; padding: 10px 14px; border-radius: 10px; margin-bottom: 8px; font-weight: 600; font-size: 13px; border: 1px solid var(--border); box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <!-- Running Text -->
+  <div class="marquee-wrapper">
+    <i class="fa-solid fa-bullhorn"></i>
+    <div class="marquee"><p id="runningText">Selamat Datang di Portal Piket UKS PMR • Jaga Kebersihan, Kerapihan, & Kedisiplinan Tim PMR!</p></div>
+  </div>
+
+  <!-- Header Bar -->
+  <div class="header-bar">
+    <div class="brand-title"><i class="fa-solid fa-kit-medical"></i> PIKET UKS PMR</div>
+    <div class="time-badge" id="clockInfo"><i class="fa-regular fa-clock"></i> --:--:--</div>
+  </div>
+
+  <!-- Tab Navigasi -->
+  <div class="nav-tabs">
+    <button class="tab-btn active" onclick="switchTab('siswa', this)"><i class="fa-solid fa-calendar-day"></i> Jadwal</button>
+    <button class="tab-btn" onclick="switchTab('piket', this)"><i class="fa-solid fa-camera"></i> Bukti Piket</button>
+    <button class="tab-btn" onclick="switchTab('admin', this)"><i class="fa-solid fa-user-shield"></i> Admin</button>
+  </div>
+
+  <!-- 1. PORTAL SISWA -->
+  <div id="view-siswa" class="view-section active">
+    <div class="shift-card" id="statusShiftHariIni">
+      <i class="fa-solid fa-circle-info fa-lg"></i> <span id="shiftTextInfo">Memeriksa jadwal shift aktif...</span>
+    </div>
+
+    <h3 style="font-size: 16px; font-weight: 800;">Jadwal Petugas Hari Ini</h3>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr><th>Shift / Waktu</th><th>Petugas Piket</th><th>Status</th></tr>
+        </thead>
+        <tbody id="bodyJadwalSiswa">
+          <tr><td colspan="3" style="text-align: center; color: var(--text-muted);">Memuat data jadwal...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 2. FORM PIKET SISWA -->
+  <div id="view-piket" class="view-section">
+    <div style="margin-bottom: 20px;">
+      <h3 style="font-size: 18px; font-weight: 800;">Upload Foto Bukti Piket</h3>
+      <p style="font-size: 13px; color: var(--text-muted);">Pastikan foto terlihat jelas saat mulai jam piket.</p>
+    </div>
+
+    <form id="formPiket">
+      <div class="form-group">
+        <label><i class="fa-solid fa-user"></i> Pilih Nama Petugas Shift:</label>
+        <select id="selectNamaPiket" required>
+          <option value="">-- Kunci Terbuka Pada Jam Shift --</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label><i class="fa-solid fa-clipboard-list"></i> Kondisi UKS & Catatan:</label>
+        <input type="text" id="catatanPiket" placeholder="Misal: Obat Paracetamol habis, UKS rapih" required>
+      </div>
+
+      <div class="form-group">
+        <label><i class="fa-solid fa-image"></i> Ambil Foto Bukti:</label>
+        <input type="file" id="fotoPiket" accept="image/*" required>
+      </div>
+
+      <button type="submit" class="btn-aesthetic"><i class="fa-solid fa-paper-plane"></i> Kirim Laporan Piket</button>
+    </form>
+  </div>
+
+  <!-- 3. DASHBOARD ADMIN (MULTI ADMIN) -->
+  <div id="view-admin" class="view-section">
+    <!-- Login Box -->
+    <div id="adminLoginForm" style="max-width: 400px; margin: 0 auto; padding: 20px;">
+      <h3 style="text-align: center; margin-bottom: 20px; font-weight: 800;">Master Admin Login</h3>
+      <div class="form-group"><label>Username</label><input type="text" id="admUser" placeholder="Masukkan username"></div>
+      <div class="form-group"><label>Password</label><input type="password" id="admPass" placeholder="Masukkan password"></div>
+      <button onclick="loginAdmin()" class="btn-aesthetic"><i class="fa-solid fa-right-to-bracket"></i> Masuk Dashboard</button>
+    </div>
+
+    <!-- Admin Panel Control -->
+    <div id="adminDashboard" style="display:none;">
+      <div style="background: var(--primary-light); padding: 18px; border-radius: 16px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+        <div>
+          <h4 id="adminWelcome" style="color: var(--primary); font-weight: 800;">Selamat Datang Admin</h4>
+          <p id="adminRole" style="font-size: 12px; color: var(--text-muted);"></p>
+        </div>
+        <div style="display: flex; gap: 8px;">
+          <button onclick="bukaModalGantiPass()" style="background: #FFF; border: 1px solid var(--border); padding: 8px 14px; border-radius: 10px; font-weight: 700; font-size: 12px; cursor: pointer;"><i class="fa-solid fa-key"></i> Pass</button>
+          <button onclick="logoutAdmin()" style="background: #FCE8E6; color: #D93025; border: none; padding: 8px 14px; border-radius: 10px; font-weight: 700; font-size: 12px; cursor: pointer;"><i class="fa-solid fa-power-off"></i> Out</button>
+        </div>
+      </div>
+
+      <!-- Control Fitur Admin -->
+      <h4 style="font-size: 15px; font-weight: 800; margin-bottom: 12px;">Pilih Hari & Penyusunan Piket</h4>
+      <select id="selectHariPiket" style="margin-bottom: 15px;">
+        <option value="Senin">Senin</option><option value="Selasa">Selasa</option>
+        <option value="Rabu">Rabu</option><option value="Kamis">Kamis</option>
+        <option value="Jumat">Jumat (1 Shift)</option>
+      </select>
+
+      <div class="grid-drag">
+        <div class="drag-box">
+          <h5 style="font-size: 13px; font-weight: 800; margin-bottom: 10px; color: var(--text-muted);">Pool Anggota</h5>
+          <div id="poolAnggotaList"></div>
+        </div>
+        <div class="drag-box">
+          <h5 style="font-size: 13px; font-weight: 800; margin-bottom: 10px; color: var(--primary);">Shift 1</h5>
+          <div id="colShift1"></div>
+        </div>
+        <div class="drag-box">
+          <h5 style="font-size: 13px; font-weight: 800; margin-bottom: 10px; color: var(--accent);">Shift 2</h5>
+          <div id="colShift2"></div>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 10px; margin-top: 15px;">
+        <button class="btn-aesthetic" style="flex: 2;"><i class="fa-solid fa-bullhorn"></i> Terbitkan Jadwal</button>
+        <button class="btn-aesthetic" style="flex: 1; background: #FCE8E6; color: #D93025; box-shadow: none;"><i class="fa-solid fa-trash-can"></i> Kosongkan</button>
+      </div>
+
+      <hr style="margin: 30px 0; border: none; border-top: 1px dashed var(--border);">
+
+      <!-- Verifikasi Bukti Foto -->
+      <h4 style="font-size: 15px; font-weight: 800; margin-bottom: 15px;">Verifikasi Foto Piket</h4>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr><th>Petugas</th><th>Foto</th><th>Kondisi</th><th>Status</th><th>Aksi</th></tr>
+          </thead>
+          <tbody id="tabelVerifikasiPiket">
+            <tr><td colspan="5" style="text-align: center; color: var(--text-muted);">Belum ada pengiriman bukti piket.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <button onclick="salinRekapWA()" class="btn-aesthetic" style="background: #25D366; margin-top: 15px; box-shadow: 0 8px 20px rgba(37,211,102,0.2);"><i class="fa-brands fa-whatsapp"></i> Salin Rekap Teks WA</button>
+
+      <hr style="margin: 30px 0; border: none; border-top: 1px dashed var(--border);">
+
+      <!-- Kelola Anggota -->
+      <h4 style="font-size: 15px; font-weight: 800; margin-bottom: 15px;">Manajemen Anggota (Testing / Tambah Hapus)</h4>
+      <form id="formTambahAnggota" style="display: flex; gap: 10px; margin-bottom: 15px;">
+        <input type="text" id="namaBaru" placeholder="Nama Lengkap" required style="flex: 2;">
+        <select id="faseBaru" style="flex: 1;"><option value="E">Fase E</option><option value="F">Fase F</option></select>
+        <button type="submit" class="btn-aesthetic" style="width: auto; padding: 0 20px;">+ Tambah</button>
+      </form>
+
+      <div class="table-container">
+        <table>
+          <thead><tr><th>Nama Lengkap</th><th>Fase</th><th>Aksi Hapus</th></tr></thead>
+          <tbody id="bodyAnggotaAll"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Inisialisasi Supabase
+  const SUPABASE_URL = 'https://xlrpxjtrpqemcaastklo.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhscnB4anRycHFlbWNhYXN0a2xvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODczNjMzODcsImV4cCI6MjEwMjkzOTM4N30.1V6eTxojH251hm9IHR90JC0nWqcb61eSFXwNov1meq4';
+  const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  let currentAdminSession = null;
+
+  // Realtime Jam Digital
+  setInterval(() => {
+    const now = new Date();
+    document.getElementById('clockInfo').innerHTML = `<i class="fa-regular fa-clock"></i> ` + now.toLocaleTimeString('id-ID');
+    cekAktifShift();
+  }, 1000);
+
+  function switchTab(tabName, element) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
+    
+    document.getElementById(`view-${tabName}`).classList.add('active');
+    element.classList.add('active');
+
+    if(tabName === 'admin' && currentAdminSession) muatDashboardAdmin();
+  }
+
+  // Pengecekan Waktu Shift
+  function cekAktifShift() {
+    const now = new Date();
+    const day = now.getDay(); 
+    const timeStr = now.toTimeString().substring(0, 5);
+    
+    let isShiftOpen = false;
+    let textInfo = "Di luar jam piket UKS (Dropdown Terkunci 🔒)";
+
+    if (day === 1) { // SENIN
+      if ((timeStr >= "09:05" && timeStr <= "09:35") || (timeStr >= "12:15" && timeStr <= "13:00")) isShiftOpen = true;
+    } else if (day >= 2 && day <= 4) { // SELASA - KAMIS
+      if ((timeStr >= "09:20" && timeStr <= "09:50") || (timeStr >= "11:50" && timeStr <= "12:50")) isShiftOpen = true;
+    } else if (day === 5) { // JUMAT
+      if (timeStr >= "09:00" && timeStr <= "09:40") isShiftOpen = true;
+    }
+
+    if(isShiftOpen) textInfo = " Jam Shift Sedang Berlangsung. Silahkan Upload Bukti!";
+    document.getElementById('shiftTextInfo').innerText = textInfo;
+
+    const selectPiket = document.getElementById('selectNamaPiket');
+    if(selectPiket) selectPiket.disabled = !isShiftOpen;
+  }
+
+  // Multi Admin Auth
+  async function loginAdmin() {
+    const u = document.getElementById('admUser').value;
+    const p = document.getElementById('admPass').value;
+
+    const { data, error } = await sb.from('admins').select('*').eq('username', u).eq('password', p).single();
+
+    if(error || !data) {
+      alert("Username atau Password Admin Salah!");
+      return;
+    }
+
+    currentAdminSession = data;
+    document.getElementById('adminLoginForm').style.display = 'none';
+    document.getElementById('adminDashboard').style.display = 'block';
+    
+    document.getElementById('adminWelcome').innerText = `Selamat Datang, ${data.nama}`;
+    document.getElementById('adminRole').innerText = `Jabatan: ${data.jabatan} (@${data.username})`;
+
+    muatKelolaAnggota();
+  }
+
+  function logoutAdmin() {
+    currentAdminSession = null;
+    document.getElementById('adminLoginForm').style.display = 'block';
+    document.getElementById('adminDashboard').style.display = 'none';
+  }
+
+  async function muatKelolaAnggota() {
+    const { data } = await sb.from('members').select('*').order('nama', { ascending: true });
+    let html = '';
+    data.forEach(m => {
+      html += `<tr><td><b>${m.nama}</b></td><td>Fase ${m.fase}</td><td><button onclick="hapusAnggota(${m.id}, '${m.nama}')" style="background:#FCE8E6; color:#D93025; border:none; padding:6px 12px; border-radius:8px; cursor:pointer; font-weight:700;"><i class="fa-solid fa-trash"></i></button></td></tr>`;
+    });
+    document.getElementById('bodyAnggotaAll').innerHTML = html;
+  }
+
+  async function hapusAnggota(id, nama) {
+    if(confirm(`Konfirmasi 1: Hapus ${nama}?`)) {
+      if(confirm(`Konfirmasi 2 (Terakhir): Data ${nama} akan dihapus dari Supabase. Yakin?`)) {
+        await sb.from('members').delete().eq('id', id);
+        muatKelolaAnggota();
+      }
+    }
+  }
+
+  function salinRekapWA() {
+    const textRekap = `*REKAP PIKET UKS PMR*\nHari/Tanggal: ${new Date().toLocaleDateString('id-ID')}\n-----------------------------------\nShift 1: [Lengkap / Ada Catatan]\nShift 2: [Lengkap / Ada Catatan]\n-----------------------------------\n_Di-generate otomatis oleh Sistem Piket UKS_`;
+    navigator.clipboard.writeText(textRekap);
+    alert("Teks Rekap WA berhasil disalin ke clipboard!");
+  }
+</script>
+</body>
+</html>

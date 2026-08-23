@@ -68,10 +68,13 @@
     .status-hijau { background: #22C55E; box-shadow: 0 0 6px rgba(34,197,94,0.6); }
     .status-legend { display: flex; gap: 14px; font-size: 11px; color: var(--text-muted); margin-bottom: 14px; flex-wrap: wrap; }
     .status-legend span { display: flex; align-items: center; gap: 5px; }
+    .riwayat-card { border: 1px solid var(--border); border-radius: 12px; overflow: hidden; background: white; }
+    .riwayat-card img { width: 100%; height: 100px; object-fit: cover; display: block; }
+    .riwayat-card-info { padding: 8px; font-size: 11px; }
   </style>
 </head>
 <body>
- 
+
 <div id="welcomeScreen">
   <canvas id="physicsCanvas"></canvas>
   <div class="hero-glass-card">
@@ -82,7 +85,7 @@
     <button class="btn-hero btn-hero-siswa" onclick="masukPortalSiswa()"><i class="fa-solid fa-calendar-days"></i> Lihat Jadwal Piket</button>
   </div>
 </div>
- 
+
 <div class="modal-overlay" id="modalLogin">
   <div class="modal-card">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
@@ -99,7 +102,7 @@
     </div>
   </div>
 </div>
- 
+
 <div class="app-container" id="mainApp">
   <div class="header-bar">
     <div class="brand-title"><i class="fa-solid fa-kit-medical"></i> PIKET UKS PMR</div>
@@ -110,13 +113,13 @@
       <div class="time-badge" id="clockInfo"><i class="fa-regular fa-clock"></i> --:--:--</div>
     </div>
   </div>
- 
+
   <div class="nav-tabs">
     <button class="tab-btn active" id="tabSiswaBtn" onclick="switchTab('siswa', this)"><i class="fa-solid fa-calendar-day"></i> Jadwal</button>
     <button class="tab-btn" onclick="switchTab('piket', this)"><i class="fa-solid fa-camera"></i> Bukti Piket</button>
     <button class="tab-btn" id="tabAdminBtn" style="display:none;" onclick="switchTab('admin', this)"><i class="fa-solid fa-user-shield"></i> Panel Admin</button>
   </div>
- 
+
   <div id="view-siswa" class="view-section active">
     <div class="day-selector-bar">
       <div class="day-chip active" onclick="pilihHari('Senin', this)">Senin</div>
@@ -125,17 +128,17 @@
       <div class="day-chip" onclick="pilihHari('Kamis', this)">Kamis</div>
       <div class="day-chip" onclick="pilihHari('Jumat', this)">Jumat</div>
     </div>
- 
+
     <div style="background: white; border: 1px solid var(--border); border-radius: 14px; padding: 12px 16px; margin-bottom: 15px; font-weight: 700; font-size: 14px; color: var(--primary);">
       <i class="fa-regular fa-calendar-check"></i> Tanggal Hari Ini: <span id="currentDateDisplay">-</span>
     </div>
- 
+
     <div class="status-legend">
       <span><span class="status-dot status-merah"></span> Belum Piket</span>
       <span><span class="status-dot status-kuning"></span> Menunggu Konfirmasi</span>
       <span><span class="status-dot status-hijau"></span> Sudah Piket</span>
     </div>
- 
+
     <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 12px;">Petugas Piket Hari <span id="lblSelectedDay">Senin</span></h3>
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;" id="siswaGridContainer">
       <div style="background: white; border: 1px solid var(--border); border-radius: 16px; padding: 15px;">
@@ -148,14 +151,14 @@
       </div>
     </div>
   </div>
- 
+
   <div id="view-piket" class="view-section">
     <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 15px;">Upload Foto Bukti Piket</h3>
- 
+
     <div id="masterTestingBadge" class="master-panel" style="display: none;">
       <span><i class="fa-solid fa-flask"></i> <b>Master Override Aktif:</b> <span id="masterTestingBadgeDetail">-</span></span>
     </div>
- 
+
     <form id="formPiket">
       <div class="form-group">
         <label>Nama Petugas Shift:</label>
@@ -172,7 +175,7 @@
       <button type="submit" class="btn-aesthetic" id="btnSubmitPiket"><i class="fa-solid fa-paper-plane"></i> Kirim Laporan Piket</button>
     </form>
   </div>
- 
+
   <div id="view-admin" class="view-section">
     <div style="background: var(--primary-light); padding: 16px; border-radius: 16px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
       <div>
@@ -186,7 +189,7 @@
         <button onclick="logoutAdmin()" style="background: #FCE8E6; color: #D93025; border: none; padding: 8px 14px; border-radius: 10px; font-weight: 700; cursor: pointer;">Logout</button>
       </div>
     </div>
- 
+
     <div id="masterOverrideBox" class="master-panel" style="display: none; flex-direction: column; align-items: stretch;">
       <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 12px;">
         <div>
@@ -197,7 +200,7 @@
           Aktifkan Master Override
         </button>
       </div>
- 
+
       <div id="overridePickerBox" style="display: none; gap: 8px; flex-wrap: wrap; align-items: center;">
         <span style="font-size: 12px; font-weight: 700;">Simulasi:</span>
         <select id="selectHariOverride" onchange="ubahOverride()" style="padding: 8px 10px; border-radius: 8px; border: 1px solid #1A73E8; font-size: 12px; font-weight: 700;">
@@ -214,7 +217,16 @@
         <span id="overrideStatusText" style="font-size: 11px; color: #1967D2; font-weight: 700;"></span>
       </div>
     </div>
- 
+
+    <div style="background: #FDFDFD; border: 1px solid var(--border); padding: 15px; border-radius: 16px; margin-bottom: 20px;">
+      <h4 style="font-size: 14px; font-weight: 800; margin-bottom: 10px;">
+        <i class="fa-solid fa-images"></i> Riwayat Laporan Piket Hari Ini
+      </h4>
+      <div id="riwayatLaporanBox" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px;">
+        <span style="font-size: 12px; color: #aaa;">Memuat...</span>
+      </div>
+    </div>
+
     <div class="day-selector-bar">
       <div class="day-chip active" onclick="pilihHariAdmin('Senin', this)">Atur Senin</div>
       <div class="day-chip" onclick="pilihHariAdmin('Selasa', this)">Atur Selasa</div>
@@ -222,7 +234,7 @@
       <div class="day-chip" onclick="pilihHariAdmin('Kamis', this)">Atur Kamis</div>
       <div class="day-chip" onclick="pilihHariAdmin('Jumat', this)">Atur Jumat</div>
     </div>
- 
+
     <div style="background: #FDFDFD; border: 1px solid var(--border); padding: 15px; border-radius: 16px; margin-bottom: 20px;">
       <h4 style="font-size: 14px; font-weight: 800; margin-bottom: 10px;">+ Tambah Anggota PMR Baru</h4>
       <form id="formTambahAnggota" style="display: flex; gap: 10px; flex-wrap: wrap;">
@@ -231,14 +243,14 @@
         <button type="submit" class="btn-aesthetic" style="width: auto; padding: 0 20px;">Simpan</button>
       </form>
     </div>
- 
+
     <h4 style="font-size: 14px; font-weight: 800; margin-bottom: 5px;">
       <i class="fa-solid fa-hand-pointer"></i> Atur Jadwal Hari <span id="lblAdminDay" style="color: var(--primary);">Senin</span>
     </h4>
     <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 15px;">
       *Tarik kartu ke kolom tujuan (bisa pakai jari di HP) atau gunakan menu pilihan cepat di kartu.
     </p>
- 
+
     <div class="admin-4col-grid">
       <div class="col-box" id="boxContainerE" data-target-shift="0">
         <div class="col-header" style="color: #4B5563;">
@@ -247,7 +259,7 @@
         </div>
         <div class="card-list" id="boxFaseE"></div>
       </div>
- 
+
       <div class="col-box" id="boxContainerF" data-target-shift="0">
         <div class="col-header" style="color: #4B5563;">
           <span><i class="fa-solid fa-users"></i> Unassigned F</span>
@@ -255,7 +267,7 @@
         </div>
         <div class="card-list" id="boxFaseF"></div>
       </div>
- 
+
       <div class="col-box" id="shift1Zone" data-target-shift="1" style="background: #FFF8F3; border-color: var(--primary);">
         <div class="col-header" style="color: var(--primary);">
           <span><i class="fa-solid fa-sun"></i> Shift 1</span>
@@ -263,7 +275,7 @@
         </div>
         <div class="card-list" id="shift1List"></div>
       </div>
- 
+
       <div class="col-box" id="shift2Zone" data-target-shift="2" style="background: #FFFBF0; border-color: var(--accent);">
         <div class="col-header" style="color: var(--accent);">
           <span><i class="fa-solid fa-cloud-sun"></i> Shift 2</span>
@@ -274,7 +286,7 @@
     </div>
   </div>
 </div>
- 
+
 <div class="modal-overlay" id="modalGantiPass">
   <div class="modal-card">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
@@ -286,13 +298,13 @@
     <button onclick="prosesGantiPassword()" class="btn-aesthetic"><i class="fa-solid fa-save"></i> Simpan Password Baru</button>
   </div>
 </div>
- 
+
 <script>
   // SUPABASE CONFIG
   const SUPABASE_URL = 'https://xlrpxjtrpqemcaastklo.supabase.co';
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhscnB4anRycHFlbWNhYXN0a2xvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODczNjMzODcsImV4cCI6MjEwMjkzOTM4N30.1V6eTxojH251hm9IHR90JC0nWqcb61eSFXwNov1meq4';
   const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
- 
+
   let currentAdminSession = null;
   let isMasterOverride = false;
   let overrideHari = 'Senin';
@@ -302,7 +314,8 @@
   let selectedHari = 'Senin';
   let selectedAdminHari = 'Senin';
   let sortableInstances = [];
- 
+  let sedangProsesDrag = false;
+
   const SHIFT_TIMES = {
     'Senin':  { 1: ['09:05','09:35'], 2: ['12:15','13:00'] },
     'Selasa': { 1: ['09:20','09:50'], 2: ['11:50','12:50'] },
@@ -310,80 +323,80 @@
     'Kamis':  { 1: ['09:20','09:50'], 2: ['11:50','12:50'] },
     'Jumat':  { 1: ['09:00','09:40'] }
   };
- 
+
   setInterval(() => {
     const d = new Date();
     document.getElementById('clockInfo').innerHTML = `<i class="fa-regular fa-clock"></i> ` + d.toLocaleTimeString('id-ID');
     cekAktifShift();
     populateDropdownPiket();
   }, 1000);
- 
+
   setInterval(async () => {
     await muatLaporanHariIni();
     renderShiftSiswa();
   }, 30000);
- 
+
   function updateDateDisplay() {
     const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
     document.getElementById('currentDateDisplay').innerText = new Date().toLocaleDateString('id-ID', options);
   }
- 
+
   function tanggalHariIniStr() {
     const d = new Date();
     return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
   }
- 
+
   function masukPortalSiswa() {
     document.getElementById('welcomeScreen').style.display = 'none';
     document.getElementById('mainApp').style.display = 'block';
     updateDateDisplay();
- 
+
     const daysArr = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
     const today = daysArr[new Date().getDay()];
     if(['Senin','Selasa','Rabu','Kamis','Jumat'].includes(today)) selectedHari = today;
- 
+
     updateUIHariSiswa();
     muatDataSiswa();
   }
- 
+
   function bukaModalLogin() { document.getElementById('modalLogin').style.display = 'flex'; }
   function tutupModalLogin() { document.getElementById('modalLogin').style.display = 'none'; }
   function bukaModalGantiPass() { document.getElementById('modalGantiPass').style.display = 'flex'; }
   function tutupModalGantiPass() { document.getElementById('modalGantiPass').style.display = 'none'; }
- 
+
   async function prosesLoginAdmin() {
     const u = document.getElementById('admUser').value;
     const p = document.getElementById('admPass').value;
- 
+
     const { data, error } = await sb.from('admins').select('*').eq('username', u).eq('password', p).single();
- 
+
     if(error || !data) {
       alert("Username / Password Admin Salah!");
       return;
     }
- 
+
     currentAdminSession = data;
     tutupModalLogin();
     masukPortalSiswa();
- 
+
     document.getElementById('tabAdminBtn').style.display = 'flex';
     document.getElementById('adminWelcome').innerText = `Selamat Datang, ${data.nama}`;
     document.getElementById('adminRole').innerText = `Jabatan: ${data.jabatan} (@${data.username})`;
- 
+
     if(data.id === 1 || data.id === "1") {
       document.getElementById('masterOverrideBox').style.display = 'flex';
     } else {
       document.getElementById('masterOverrideBox').style.display = 'none';
     }
- 
+
     switchTab('admin', document.getElementById('tabAdminBtn'));
     muatKelolaAdmin();
   }
- 
+
   async function prosesGantiPassword() {
     const passLama = document.getElementById('passLama').value;
     const passBaru = document.getElementById('passBaru').value;
- 
+
     if(!passLama || !passBaru) {
       alert("Harap isi password lama dan password baru!");
       return;
@@ -392,9 +405,9 @@
       alert("Password lama yang kamu masukkan salah!");
       return;
     }
- 
+
     const { error } = await sb.from('admins').update({ password: passBaru }).eq('id', currentAdminSession.id);
- 
+
     if(error) {
       alert("Gagal mengubah password: " + error.message);
     } else {
@@ -405,13 +418,14 @@
       document.getElementById('passBaru').value = '';
     }
   }
- 
+
+  // === MASTER OVERRIDE: mode debug/simulasi hari & shift manapun (khusus admin id=1) ===
   function toggleMasterOverride() {
     isMasterOverride = !isMasterOverride;
     const btn = document.getElementById('btnMasterOverride');
     const badge = document.getElementById('masterTestingBadge');
     const picker = document.getElementById('overridePickerBox');
- 
+
     if(isMasterOverride) {
       btn.innerText = "Matikan Master Override";
       btn.style.background = "#D93025";
@@ -427,32 +441,33 @@
     cekAktifShift();
     populateDropdownPiket();
   }
- 
+
   function ubahOverride() {
     overrideHari = document.getElementById('selectHariOverride').value;
     overrideShift = parseInt(document.getElementById('selectShiftOverride').value);
- 
+
     document.getElementById('overrideStatusText').innerText = `→ Simulasi: ${overrideHari}, Shift ${overrideShift}`;
     document.getElementById('masterTestingBadgeDetail').innerText = `Form terbuka untuk simulasi ${overrideHari}, Shift ${overrideShift}.`;
- 
+
     cekAktifShift();
     populateDropdownPiket();
   }
- 
+
   function logoutAdmin() {
     currentAdminSession = null;
     document.getElementById('tabAdminBtn').style.display = 'none';
     document.getElementById('masterOverrideBox').style.display = 'none';
+    // isMasterOverride & masterTestingBadge sengaja TIDAK direset, biar simulasi tetap jalan pas cek sisi siswa
     switchTab('siswa', document.getElementById('tabSiswaBtn'));
   }
- 
+
   function switchTab(tabName, element) {
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
     document.getElementById(`view-${tabName}`).classList.add('active');
     element.classList.add('active');
   }
- 
+
   function pilihHari(hari, el) {
     selectedHari = hari;
     document.querySelectorAll('#view-siswa .day-chip').forEach(c => c.classList.remove('active'));
@@ -460,22 +475,22 @@
     updateUIHariSiswa();
     renderShiftSiswa();
   }
- 
+
   function pilihHariAdmin(hari, el) {
     selectedAdminHari = hari;
     document.querySelectorAll('#view-admin .day-chip').forEach(c => c.classList.remove('active'));
     el.classList.add('active');
     document.getElementById('lblAdminDay').innerText = hari;
- 
+
     if(hari === 'Jumat') {
       document.getElementById('shift2Zone').style.display = 'none';
     } else {
       document.getElementById('shift2Zone').style.display = 'flex';
     }
- 
+
     renderAdminBoxes();
   }
- 
+
   function updateUIHariSiswa() {
     document.getElementById('lblSelectedDay').innerText = selectedHari;
     if(selectedHari === 'Jumat') {
@@ -486,20 +501,21 @@
       document.getElementById('siswaGridContainer').style.gridTemplateColumns = '1fr 1fr';
     }
   }
- 
+
+  // Cari shift yang lagi buka SEKARANG (return null kalau lagi tutup / weekend / master override off & di luar jam)
   function getShiftAktifSekarang() {
     if (isMasterOverride) {
       return { hari: overrideHari, shifts: [overrideShift] };
     }
- 
+
     const daysArr = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
     const now = new Date();
     const hariIni = daysArr[now.getDay()];
     const timeStr = now.toTimeString().substring(0, 5);
- 
-    const jamHariIni = SHIFT_TIMES[hariIni];
+
+    const jamHariIni = SHIFT_TIMES[hariIni]; // otomatis null utk Sabtu/Minggu -> form terkunci
     if (!jamHariIni) return null;
- 
+
     for (const shiftNum in jamHariIni) {
       const [mulai, selesai] = jamHariIni[shiftNum];
       if (timeStr >= mulai && timeStr <= selesai) {
@@ -508,17 +524,17 @@
     }
     return null;
   }
- 
+
   function cekAktifShift() {
     const aktif = getShiftAktifSekarang();
     const selectPiket = document.getElementById('selectNamaPiket');
     const btnSubmit = document.getElementById('btnSubmitPiket');
     const terkunci = !aktif;
- 
+
     selectPiket.disabled = terkunci;
     btnSubmit.disabled = terkunci;
   }
- 
+
   async function muatDataSiswa() {
     const { data } = await sb.from('members').select('*');
     if(data) {
@@ -528,77 +544,102 @@
       populateDropdownPiket();
     }
   }
- 
+
   async function muatLaporanHariIni() {
     const { data } = await sb.from('piket').select('nama_petugas').eq('tanggal', tanggalHariIniStr());
     laporanHariIni = data || [];
   }
- 
+
+  // Tentukan status dot: 'merah' | 'kuning' | 'hijau' | null
   function tentukanStatus(nama, hari, shift) {
     const sudahLapor = laporanHariIni.some(l => l.nama_petugas === nama);
     if (sudahLapor) return 'hijau';
- 
+
     const daysArr = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
     const hariIniNama = daysArr[new Date().getDay()];
     if (hari !== hariIniNama) return null;
- 
+
     const jam = SHIFT_TIMES[hari] && SHIFT_TIMES[hari][shift];
     if (!jam) return null;
- 
+
     const timeStr = new Date().toTimeString().substring(0,5);
     if (timeStr < jam[0]) return null;
     if (timeStr >= jam[0] && timeStr <= jam[1]) return 'kuning';
     return 'merah';
   }
- 
+
   function renderShiftSiswa() {
     const s1 = allMembers.filter(m => m.hari === selectedHari && m.shift === 1);
     const s2 = allMembers.filter(m => m.hari === selectedHari && m.shift === 2);
- 
+
     const buatBaris = (m, shiftNum) => {
       const status = tentukanStatus(m.nama, selectedHari, shiftNum);
       const dot = status ? `<span class="status-dot status-${status}"></span>` : '';
       return `<div style="padding:4px 0">• ${m.nama} (Fase ${m.fase})${dot}</div>`;
     };
- 
+
     document.getElementById('listShift1Siswa').innerHTML = s1.length ? s1.map(m => buatBaris(m, 1)).join('') : '<span style="color:#aaa; font-size:12px;">Tidak ada petugas</span>';
     document.getElementById('listShift2Siswa').innerHTML = s2.length ? s2.map(m => buatBaris(m, 2)).join('') : '<span style="color:#aaa; font-size:12px;">Tidak ada petugas</span>';
   }
- 
+
+  // Dropdown Bukti Piket cuma isi petugas yang emang piket di hari+shift aktif saat ini
   function populateDropdownPiket() {
     const select = document.getElementById('selectNamaPiket');
     const nilaiSebelumnya = select.value;
     select.innerHTML = '<option value="">-- Pilih Nama Petugas --</option>';
- 
+
     const aktif = getShiftAktifSekarang();
     if (!aktif) return;
- 
+
     const petugasAktif = allMembers.filter(m => m.hari === aktif.hari && aktif.shifts.includes(m.shift));
- 
+
     petugasAktif.forEach(m => {
       select.innerHTML += `<option value="${m.nama}">${m.nama} (Fase ${m.fase})</option>`;
     });
- 
+
     if (petugasAktif.some(m => m.nama === nilaiSebelumnya)) {
       select.value = nilaiSebelumnya;
     }
   }
- 
+
   async function muatKelolaAdmin() {
     const { data } = await sb.from('members').select('*').order('nama', { ascending: true });
     if(data) {
       allMembers = data;
       renderAdminBoxes();
     }
+    muatRiwayatLaporan();
   }
- 
+
+  // Gallery riwayat foto laporan piket hari ini (khusus Panel Admin)
+  async function muatRiwayatLaporan() {
+    const { data } = await sb.from('piket').select('*').eq('tanggal', tanggalHariIniStr()).order('created_at', { ascending: false });
+    const box = document.getElementById('riwayatLaporanBox');
+    if (!box) return;
+
+    if (!data || data.length === 0) {
+      box.innerHTML = '<span style="font-size: 12px; color: #aaa;">Belum ada laporan piket hari ini</span>';
+      return;
+    }
+
+    box.innerHTML = data.map(r => `
+      <div class="riwayat-card">
+        <img src="${r.foto_url}" loading="lazy" />
+        <div class="riwayat-card-info">
+          <b>${r.nama_petugas}</b><br>
+          <span style="color: #888;">${r.catatan || '-'}</span>
+        </div>
+      </div>
+    `).join('');
+  }
+
   function buatKartuAnggota(m) {
     const card = document.createElement('div');
     card.className = 'draggable-card';
     card.dataset.memberId = m.id;
- 
+
     const isShift2Avail = selectedAdminHari !== 'Jumat';
- 
+
     card.innerHTML = `
       <div class="card-top">
         <span>${m.nama} <small style="color:#888;">(Fase ${m.fase})</small></span>
@@ -612,20 +653,20 @@
     `;
     return card;
   }
- 
+
   function renderAdminBoxes() {
     const boxE = document.getElementById('boxFaseE');
     const boxF = document.getElementById('boxFaseF');
     const listS1 = document.getElementById('shift1List');
     const listS2 = document.getElementById('shift2List');
- 
+
     boxE.innerHTML = ''; boxF.innerHTML = ''; listS1.innerHTML = ''; listS2.innerHTML = '';
     let countE = 0, countF = 0, countS1 = 0, countS2 = 0;
- 
+
     allMembers.forEach(m => {
       const card = buatKartuAnggota(m);
       const isShift2Avail = selectedAdminHari !== 'Jumat';
- 
+
       if(m.hari === selectedAdminHari && m.shift === 1) {
         listS1.appendChild(card); countS1++;
       } else if(m.hari === selectedAdminHari && m.shift === 2 && isShift2Avail) {
@@ -635,26 +676,26 @@
         else { boxF.appendChild(card); countF++; }
       }
     });
- 
+
     document.getElementById('countE').innerText = countE;
     document.getElementById('countF').innerText = countF;
     document.getElementById('countS1').innerText = countS1;
     document.getElementById('countS2').innerText = countS2;
- 
+
     setupSortable();
   }
- 
+
   function setupSortable() {
     sortableInstances.forEach(inst => inst.destroy());
     sortableInstances = [];
- 
+
     const lists = [
       { el: document.getElementById('boxFaseE'), shift: 0 },
       { el: document.getElementById('boxFaseF'), shift: 0 },
       { el: document.getElementById('shift1List'), shift: 1 },
       { el: document.getElementById('shift2List'), shift: 2 },
     ];
- 
+
     lists.forEach(({ el, shift }) => {
       if (!el) return;
       const inst = Sortable.create(el, {
@@ -667,78 +708,89 @@
         chosenClass: 'sortable-chosen',
         dragClass: 'sortable-drag',
         onAdd: async (evt) => {
+          if (sedangProsesDrag) return; // cegah drag numpuk pas masih proses yang sebelumnya
+          sedangProsesDrag = true;
+
           const memberId = parseInt(evt.item.dataset.memberId);
-          if (!memberId) return;
- 
+          if (!memberId) { sedangProsesDrag = false; return; }
+
           const targetBox = evt.to.closest('.col-box');
           if (targetBox) {
             targetBox.classList.add('drag-over');
             setTimeout(() => targetBox.classList.remove('drag-over'), 250);
           }
- 
-          const { error } = await sb.from('members').update({
-            hari: selectedAdminHari,
-            shift: shift
-          }).eq('id', memberId);
- 
+
+          // Kalau ditarik ke Unassigned (shift 0), hari di-null-kan total.
+          // Ini penting supaya assignment orang itu di hari LAIN tidak ikut ketimpa.
+          const payload = shift === 0
+            ? { hari: null, shift: 0 }
+            : { hari: selectedAdminHari, shift: shift };
+
+          const { error } = await sb.from('members').update(payload).eq('id', memberId);
+
           if (error) alert('Gagal update: ' + error.message);
- 
+
           await muatKelolaAdmin();
+          sedangProsesDrag = false;
         }
       });
       sortableInstances.push(inst);
     });
   }
- 
+
   async function quickPindahShift(memberId, val) {
     const shiftNum = parseInt(val);
-    await sb.from('members').update({ hari: selectedAdminHari, shift: shiftNum }).eq('id', memberId);
+    const payload = shiftNum === 0
+      ? { hari: null, shift: 0 }
+      : { hari: selectedAdminHari, shift: shiftNum };
+    await sb.from('members').update(payload).eq('id', memberId);
     muatKelolaAdmin();
   }
- 
+
   document.getElementById('formTambahAnggota').onsubmit = async (e) => {
     e.preventDefault();
     const nama = document.getElementById('namaBaru').value;
     const fase = document.getElementById('faseBaru').value;
- 
-    await sb.from('members').insert([{ nama, fase, hari: selectedAdminHari, shift: 0 }]);
+
+    await sb.from('members').insert([{ nama, fase, hari: null, shift: 0 }]);
     document.getElementById('namaBaru').value = '';
     muatKelolaAdmin();
   };
- 
+
   async function hapusAnggota(id, nama) {
     if(confirm(`Hapus ${nama} dari sistem?`)) {
       await sb.from('members').delete().eq('id', id);
       muatKelolaAdmin();
     }
   }
- 
+
+  // SUBMIT LAPORAN BUKTI PIKET (upload foto ke Supabase Storage bucket 'bukti-piket' + insert row ke tabel 'piket')
   document.getElementById('formPiket').onsubmit = async (e) => {
     e.preventDefault();
- 
+
     const nama = document.getElementById('selectNamaPiket').value;
     const catatan = document.getElementById('catatanPiket').value;
     const fotoFile = document.getElementById('fotoPiket').files[0];
     const btnSubmit = document.getElementById('btnSubmitPiket');
- 
+
     if (!nama) { alert('Pilih nama petugas dulu!'); return; }
     if (!fotoFile) { alert('Pilih foto bukti dulu!'); return; }
- 
+
     btnSubmit.disabled = true;
     btnSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Mengirim...';
- 
+
     try {
       const namaPetugasAktif = allMembers.find(m => m.nama === nama);
       const fase = namaPetugasAktif ? namaPetugasAktif.fase : '';
- 
+
       const namaFile = `${Date.now()}_${fotoFile.name.replace(/\s+/g, '_')}`;
       const { error: errUpload } = await sb.storage.from('bukti-piket').upload(namaFile, fotoFile);
- 
+
       if (errUpload) throw errUpload;
- 
+
       const { data: urlData } = sb.storage.from('bukti-piket').getPublicUrl(namaFile);
       const fotoUrl = urlData.publicUrl;
- 
+
       const { error: errInsert } = await sb.from('piket').insert([{
         tanggal: tanggalHariIniStr(),
         nama_petugas: nama,
@@ -746,14 +798,14 @@
         catatan: catatan,
         foto_url: fotoUrl
       }]);
- 
+
       if (errInsert) throw errInsert;
- 
+
       alert('Laporan piket berhasil dikirim!');
       document.getElementById('formPiket').reset();
       await muatLaporanHariIni();
       renderShiftSiswa();
- 
+
     } catch (err) {
       alert('Gagal mengirim laporan: ' + err.message);
     } finally {
@@ -761,12 +813,12 @@
       btnSubmit.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Kirim Laporan Piket';
     }
   };
- 
+
   const canvas = document.getElementById('physicsCanvas');
   const ctx = canvas.getContext('2d');
   function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
   window.addEventListener('resize', resizeCanvas); resizeCanvas();
- 
+
   const colors = ['#FF6B00', '#FFA800', '#FF8533'];
   class Ball {
     constructor(x, y, radius, color) {

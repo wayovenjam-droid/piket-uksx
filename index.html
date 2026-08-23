@@ -61,12 +61,18 @@
     input:focus, select:focus { border-color: var(--primary); }
     .btn-aesthetic { background: linear-gradient(135deg, var(--primary), var(--primary-hover)); color: white; border: none; padding: 14px; border-radius: 14px; font-weight: 700; font-size: 14px; cursor: pointer; width: 100%; }
     .btn-aesthetic:disabled { opacity: 0.6; cursor: not-allowed; }
-    .status-dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-left: 6px; vertical-align: middle; }
+    .status-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
     .status-merah { background: #EF4444; box-shadow: 0 0 6px rgba(239,68,68,0.6); }
     .status-kuning { background: #F59E0B; box-shadow: 0 0 6px rgba(245,158,11,0.6); }
     .status-hijau { background: #22C55E; box-shadow: 0 0 6px rgba(34,197,94,0.6); }
     .status-legend { display: flex; gap: 14px; font-size: 11px; color: var(--text-muted); margin-bottom: 14px; flex-wrap: wrap; }
     .status-legend span { display: flex; align-items: center; gap: 5px; }
+    .shift-log-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+    .shift-log-title { font-size: 14px; font-weight: 800; display: flex; align-items: center; gap: 8px; }
+    .shift-log-status-lbl { font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+    .shift-log-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 4px; border-bottom: 1px solid #F3F4F6; font-size: 13px; font-weight: 600; }
+    .shift-log-row:last-child { border-bottom: none; }
+    .shift-log-divider { border: none; border-top: 2px dashed var(--border); margin: 20px 0; }
     .riwayat-card { border: 1px solid var(--border); border-radius: 12px; overflow: hidden; background: white; }
     .riwayat-card img { width: 100%; height: 110px; object-fit: cover; display: block; }
     .riwayat-card-info { padding: 8px; font-size: 11px; }
@@ -148,14 +154,25 @@
     </div>
 
     <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 12px;">Petugas Piket Hari <span id="lblSelectedDay">Senin</span></h3>
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;" id="siswaGridContainer">
-      <div style="background: white; border: 1px solid var(--border); border-radius: 16px; padding: 15px;">
-        <h4 style="color: var(--primary); margin-bottom: 10px; font-size: 14px;"><i class="fa-solid fa-sun"></i> Shift 1 (Istirahat Pertama)</h4>
-        <div id="listShift1Siswa" style="font-size: 13px; font-weight: 600;">- Memuat -</div>
+
+    <!-- LOG/TABEL: Shift 1 di atas, garis pemisah, Shift 2 di bawah -->
+    <div style="background: white; border: 1px solid var(--border); border-radius: 16px; padding: 15px;" id="siswaGridContainer">
+      <div>
+        <div class="shift-log-header">
+          <div class="shift-log-title" style="color: var(--primary);"><i class="fa-solid fa-sun"></i> Shift 1 (Istirahat Pertama)</div>
+          <span class="shift-log-status-lbl">Status</span>
+        </div>
+        <div id="listShift1Siswa">- Memuat -</div>
       </div>
-      <div style="background: white; border: 1px solid var(--border); border-radius: 16px; padding: 15px;" id="siswaShift2Box">
-        <h4 style="color: var(--accent); margin-bottom: 10px; font-size: 14px;"><i class="fa-solid fa-cloud-sun"></i> Shift 2 (Istirahat Kedua)</h4>
-        <div id="listShift2Siswa" style="font-size: 13px; font-weight: 600;">- Memuat -</div>
+
+      <hr class="shift-log-divider" id="dividerShift" />
+
+      <div id="siswaShift2Box">
+        <div class="shift-log-header">
+          <div class="shift-log-title" style="color: var(--accent);"><i class="fa-solid fa-cloud-sun"></i> Shift 2 (Istirahat Kedua)</div>
+          <span class="shift-log-status-lbl">Status</span>
+        </div>
+        <div id="listShift2Siswa">- Memuat -</div>
       </div>
     </div>
   </div>
@@ -500,14 +517,17 @@
     renderAdminBoxes();
   }
 
+  // Shift 2 & garis pemisah otomatis disembunyikan kalau hari Jumat (cuma ada 1 shift)
   function updateUIHariSiswa() {
     document.getElementById('lblSelectedDay').innerText = selectedHari;
+    const shift2Box = document.getElementById('siswaShift2Box');
+    const divider = document.getElementById('dividerShift');
     if(selectedHari === 'Jumat') {
-      document.getElementById('siswaShift2Box').style.display = 'none';
-      document.getElementById('siswaGridContainer').style.gridTemplateColumns = '1fr';
+      shift2Box.style.display = 'none';
+      divider.style.display = 'none';
     } else {
-      document.getElementById('siswaShift2Box').style.display = 'block';
-      document.getElementById('siswaGridContainer').style.gridTemplateColumns = '1fr 1fr';
+      shift2Box.style.display = 'block';
+      divider.style.display = 'block';
     }
   }
 
@@ -561,7 +581,7 @@
   // Tentukan status dot: 'merah' | 'kuning' | 'hijau' | null
   // hijau = ada laporan yang sudah DITERIMA admin
   // kuning = ada laporan pending (nunggu verifikasi) ATAU masih di jam shift & belum lapor
-  // merah = udah lewat jam shift & belum lapor sama sekali (atau laporan sebelumnya ditolak)
+  // merah = udah lewat jam shift & belum lapor sama sekali
   function tentukanStatus(nama, hari, shift) {
     const laporanOrang = laporanHariIni.filter(l => l.nama_petugas === nama);
 
@@ -581,18 +601,19 @@
     return 'merah';
   }
 
+  // Format LOG/TABEL: tiap baris = nama di kiri, dot status di kanan
   function renderShiftSiswa() {
     const s1 = allMembers.filter(m => m.hari === selectedHari && m.shift === 1);
     const s2 = allMembers.filter(m => m.hari === selectedHari && m.shift === 2);
 
     const buatBaris = (m, shiftNum) => {
       const status = tentukanStatus(m.nama, selectedHari, shiftNum);
-      const dot = status ? `<span class="status-dot status-${status}"></span>` : '';
-      return `<div style="padding:4px 0">• ${m.nama} (Fase ${m.fase})${dot}</div>`;
+      const dot = status ? `<span class="status-dot status-${status}"></span>` : '<span style="width:10px;"></span>';
+      return `<div class="shift-log-row"><span>${m.nama} <small style="color:#aaa; font-weight:600;">(Fase ${m.fase})</small></span>${dot}</div>`;
     };
 
-    document.getElementById('listShift1Siswa').innerHTML = s1.length ? s1.map(m => buatBaris(m, 1)).join('') : '<span style="color:#aaa; font-size:12px;">Tidak ada petugas</span>';
-    document.getElementById('listShift2Siswa').innerHTML = s2.length ? s2.map(m => buatBaris(m, 2)).join('') : '<span style="color:#aaa; font-size:12px;">Tidak ada petugas</span>';
+    document.getElementById('listShift1Siswa').innerHTML = s1.length ? s1.map(m => buatBaris(m, 1)).join('') : '<div class="shift-log-row" style="color:#aaa; font-weight:400;">Tidak ada petugas</div>';
+    document.getElementById('listShift2Siswa').innerHTML = s2.length ? s2.map(m => buatBaris(m, 2)).join('') : '<div class="shift-log-row" style="color:#aaa; font-weight:400;">Tidak ada petugas</div>';
   }
 
   function populateDropdownPiket() {
@@ -668,7 +689,6 @@
   async function hapusLaporan(id, fotoUrl) {
     if (!confirm('Hapus laporan & foto ini secara permanen?')) return;
 
-    // Coba hapus juga file fisiknya dari Storage
     try {
       const url = new URL(fotoUrl);
       const idx = url.pathname.indexOf('/bukti-piket/');
@@ -695,7 +715,7 @@
     let dotHtml = '';
     if (shiftUntukStatus) {
       const status = tentukanStatus(m.nama, selectedAdminHari, shiftUntukStatus);
-      dotHtml = status ? `<span class="status-dot status-${status}"></span>` : '';
+      dotHtml = status ? `<span class="status-dot status-${status}" style="margin-left:6px;"></span>` : '';
     }
 
     card.innerHTML = `

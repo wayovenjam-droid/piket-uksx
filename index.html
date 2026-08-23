@@ -54,7 +54,7 @@
     .delete-btn { color: #EF4444; cursor: pointer; padding: 2px 6px; }
     .quick-move-select { font-size: 11px; padding: 4px 6px; border-radius: 8px; border: 1px solid #D1D5DB; background: #F3F4F6; color: #374151; font-weight: 600; cursor: pointer; }
     .master-panel { background: #E8F0FE; border: 1px solid #1A73E8; padding: 14px 18px; border-radius: 16px; font-size: 13px; color: #1967D2; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
-    .wa-btn { background: #25D366; color: white; border: none; padding: 10px 16px; border-radius: 12px; font-size: 13px; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(37,211,102,0.2); }
+    .wa-btn { background: #25D366; color: white; border: none; padding: 10px 16px; border-radius: 12px; font-size: 13px; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(37,211,102,0.2); cursor: pointer; }
     .form-group { margin-bottom: 15px; text-align: left; }
     label { font-weight: 700; font-size: 13px; margin-bottom: 6px; display: block; }
     input, select, textarea { width: 100%; padding: 12px 14px; border: 2px solid var(--border); border-radius: 12px; font-size: 14px; outline: none; font-family: inherit; }
@@ -121,9 +121,9 @@
     <div class="form-group"><label>Password</label><input type="password" id="admPass" placeholder="Password PJ"></div>
     <button onclick="prosesLoginAdmin()" class="btn-aesthetic"><i class="fa-solid fa-right-to-bracket"></i> Masuk Sekarang</button>
     <div style="margin-top: 18px; text-align: center;">
-      <a href="https://wa.me/6282288861606?text=Halo%20Master%20Admin,%20saya%20PJ%20PMR%20lupa%20password%20login" target="_blank" class="wa-btn">
+      <button type="button" onclick="bukaWaResetPassword()" class="wa-btn" style="width: 100%; justify-content: center; border: none;">
         <i class="fa-brands fa-whatsapp fa-lg"></i> Bantuan Lupa Password (WA)
-      </a>
+      </button>
     </div>
   </div>
 </div>
@@ -132,8 +132,8 @@
   <div class="header-bar">
     <div class="brand-title"><i class="fa-solid fa-kit-medical"></i> PIKET UKS PMR</div>
     <div style="display: flex; gap: 10px; align-items: center;">
-      <a href="https://wa.me/6282288861606?text=Halo%20Master%20Admin" target="_blank" class="wa-btn" style="padding: 8px 12px; font-size: 12px;">
-        <i class="fa-brands fa-whatsapp fa-lg"></i> Hubungi Master
+      <a href="#" onclick="bukaWaHubungiAdmin(); return false;" class="wa-btn" style="padding: 8px 12px; font-size: 12px;">
+        <i class="fa-brands fa-whatsapp fa-lg"></i> Hubungi Admin Pengelola
       </a>
       <div class="time-badge" id="clockInfo"><i class="fa-regular fa-clock"></i> --:--:--</div>
     </div>
@@ -280,6 +280,21 @@
       </div>
     </div>
 
+    <!-- REKAP SIAP SALIN WA: cuma kelihatan buat Master (id=1) -->
+    <div id="rekapWaBox" class="master-panel" style="display: none; flex-direction: column; align-items: stretch;">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 12px;">
+        <div>
+          <h5 style="font-weight: 800;"><i class="fa-brands fa-whatsapp" style="color:#25D366;"></i> Rekap Siap Salin (WA)</h5>
+          <p style="font-size: 11px; opacity: 0.8;">Auto ke-generate dari jadwal drag & drop. Shift 2 ke-lock sampe jamnya beneran mulai~</p>
+        </div>
+        <span id="rekapWaStatusBadge" style="font-size: 11px; font-weight: 800; background: #1A73E8; color: #fff; padding: 4px 10px; border-radius: 20px; white-space: nowrap;">-</span>
+      </div>
+      <textarea id="rekapWaTextArea" readonly rows="11" style="font-family: 'Courier New', monospace; font-size: 12.5px; line-height: 1.5; background: #fff; resize: vertical; margin-bottom: 10px;"></textarea>
+      <button class="btn-aesthetic" style="background: linear-gradient(135deg, #25D366, #1DA851); display: flex; align-items: center; justify-content: center; gap: 8px;" onclick="salinRekapWA()">
+        <i class="fa-regular fa-copy"></i> Salin Rekap ke Clipboard
+      </button>
+    </div>
+
     <!-- TINJAUAN LAPORAN: kelihatan SEMUA admin yang login, tapi tombol aksi cuma buat Master -->
     <div id="riwayatLaporanPanel" style="display: none; background: #FDFDFD; border: 1px solid var(--border); padding: 15px; border-radius: 16px; margin-bottom: 20px;">
       <h4 style="font-size: 14px; font-weight: 800; margin-bottom: 10px;">
@@ -368,6 +383,9 @@
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhscnB4anRycHFlbWNhYXN0a2xvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODczNjMzODcsImV4cCI6MjEwMjkzOTM4N30.1V6eTxojH251hm9IHR90JC0nWqcb61eSFXwNov1meq4';
   const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+  // Nomor WA Admin Pengelola (ganti sesuai kebutuhan)
+  const WA_ADMIN_PENGELOLA = '6282288861606';
+
   let currentAdminSession = null;
   let isMasterOverride = false;
   let overrideHari = 'Senin';
@@ -392,6 +410,7 @@
     document.getElementById('clockInfo').innerHTML = `<i class="fa-regular fa-clock"></i> ` + d.toLocaleTimeString('id-ID');
     cekAktifShift();
     populateDropdownPiket();
+    if (currentAdminSession) generateRekapWA();
   }, 1000);
 
   setInterval(async () => {
@@ -429,6 +448,25 @@
   function bukaModalGantiPass() { document.getElementById('modalGantiPass').style.display = 'flex'; }
   function tutupModalGantiPass() { document.getElementById('modalGantiPass').style.display = 'none'; }
 
+  // === WA: Hubungi Admin Pengelola (tombol header, buat siapa aja) ===
+  function bukaWaHubungiAdmin() {
+    const teks = `Haloo Admin Pengelola~ 👋\n\nSaya mau tanya-tanya soal Piket UKS PMR ya. Mohon dibantu, makasih! 🙏`;
+    const url = 'https://wa.me/' + WA_ADMIN_PENGELOLA + '?text=' + encodeURIComponent(teks);
+    window.open(url, '_blank');
+  }
+
+  // === WA: Bantuan Lupa Password (otomatis isi username dari form login + minta password baru) ===
+  function bukaWaResetPassword() {
+    const username = document.getElementById('admUser').value.trim();
+
+    let teks = `Haloooo~ 👋\n\nSaya meminta untuk mereset password saya.\n`;
+    teks += `Username: ${username ? username : '(belum diisi, mohon dicek manual ya)'}\n\n`;
+    teks += `Mohon dibantu reset & infokan password baru saya ya. Makasih banyak! 🙏`;
+
+    const url = 'https://wa.me/' + WA_ADMIN_PENGELOLA + '?text=' + encodeURIComponent(teks);
+    window.open(url, '_blank');
+  }
+
   async function prosesLoginAdmin() {
     const u = document.getElementById('admUser').value;
     const p = document.getElementById('admPass').value;
@@ -455,6 +493,8 @@
 
     document.getElementById('masterOverrideBox').style.display = isMaster ? 'flex' : 'none';
     document.getElementById('pengumumanEditorBox').style.display = isMaster ? 'flex' : 'none';
+    document.getElementById('rekapWaBox').style.display = isMaster ? 'flex' : 'none';
+    if (isMaster) generateRekapWA();
 
     // Panel Tinjauan kelihatan buat SEMUA admin yang login
     document.getElementById('riwayatLaporanPanel').style.display = 'block';
@@ -511,6 +551,7 @@
     }
     cekAktifShift();
     populateDropdownPiket();
+    generateRekapWA();
   }
 
   function ubahOverride() {
@@ -522,6 +563,7 @@
 
     cekAktifShift();
     populateDropdownPiket();
+    generateRekapWA();
   }
 
   function logoutAdmin() {
@@ -530,6 +572,7 @@
     document.getElementById('tabPiketBtn').style.display = 'flex'; // tampilkan lagi buat siswa/publik
     document.getElementById('masterOverrideBox').style.display = 'none';
     document.getElementById('pengumumanEditorBox').style.display = 'none';
+    document.getElementById('rekapWaBox').style.display = 'none';
     document.getElementById('riwayatLaporanPanel').style.display = 'none';
     // isMasterOverride & masterTestingBadge sengaja TIDAK direset, biar simulasi tetap jalan pas cek sisi siswa
     switchTab('siswa', document.getElementById('tabSiswaBtn'));
@@ -627,7 +670,8 @@
 
   // === RUNNING TEXT: publik (semua orang) + internal announcement (khusus admin login) ===
   async function muatPengumuman() {
-    const { data } = await sb.from('pengumuman').select('*').eq('id', 1).single();
+    const { data, error } = await sb.from('pengumuman').select('*').eq('id', 1).single();
+    if (error) { console.error('muatPengumuman gagal (cek RLS policy tabel pengumuman):', error.message); return; }
     if (!data) return;
 
     const pubBox = document.getElementById('marqueePublicBox');
@@ -730,6 +774,7 @@
       renderAdminBoxes();
     }
     muatRiwayatLaporan();
+    generateRekapWA();
   }
 
   // Tinjauan foto laporan hari ini — SEMUA admin bisa lihat, tapi tombol aksi cuma buat Master (id=1)
@@ -777,6 +822,7 @@
     await muatRiwayatLaporan();
     await muatLaporanHariIni();
     renderShiftSiswa();
+    generateRekapWA();
   }
 
   async function hapusLaporan(id, fotoUrl) {
@@ -795,6 +841,7 @@
     await muatRiwayatLaporan();
     await muatLaporanHariIni();
     renderShiftSiswa();
+    generateRekapWA();
   }
 
   function buatKartuAnggota(m, shiftUntukStatus) {
@@ -970,10 +1017,11 @@
 
       if (errInsert) throw errInsert;
 
-      alert('Laporan piket berhasil dikirim! Menunggu verifikasi Master Admin.');
+      alert('Laporan piket berhasil dikirim! Menunggu verifikasi Admin Pengelola.');
       document.getElementById('formPiket').reset();
       await muatLaporanHariIni();
       renderShiftSiswa();
+      generateRekapWA();
 
     } catch (err) {
       alert('Gagal mengirim laporan: ' + err.message);
@@ -982,6 +1030,99 @@
       btnSubmit.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Kirim Laporan Piket';
     }
   };
+
+  // === REKAP SIAP SALIN WA (khusus Master id=1) ===
+  function getHariEfektifRekap() {
+    if (isMasterOverride) return overrideHari;
+    const daysArr = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+    const hariIni = daysArr[new Date().getDay()];
+    return ['Senin','Selasa','Rabu','Kamis','Jumat'].includes(hariIni) ? hariIni : null;
+  }
+
+  function emojiStatusRekap(status) {
+    if (status === 'hijau') return '✅';
+    if (status === 'kuning') return '⏳';
+    if (status === 'merah') return '❌';
+    return '⏰';
+  }
+
+  function labelStatusRekap(status) {
+    if (status === 'hijau') return 'udah piket, sip!';
+    if (status === 'kuning') return 'lagi piket / nunggu konfirmasi~';
+    if (status === 'merah') return 'belum piket nih';
+    return 'belum waktunya';
+  }
+
+  function isShift2UnlockedRekap(hariEfektif) {
+    if (hariEfektif === 'Jumat') return false;
+    if (isMasterOverride) return overrideShift === 2;
+    const jamShift2 = SHIFT_TIMES[hariEfektif] && SHIFT_TIMES[hariEfektif][2];
+    if (!jamShift2) return false;
+    const timeStr = new Date().toTimeString().substring(0, 5);
+    return timeStr >= jamShift2[0];
+  }
+
+  function generateRekapWA() {
+    const area = document.getElementById('rekapWaTextArea');
+    const badge = document.getElementById('rekapWaStatusBadge');
+    if (!area || !badge) return;
+
+    const hariEfektif = getHariEfektifRekap();
+    if (!hariEfektif) {
+      badge.innerText = 'Weekend';
+      area.value = 'Santuy, hari ini weekend, gaada jadwal piket 🌴';
+      return;
+    }
+
+    const tanggalStr = new Date().toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+    const shift1 = allMembers.filter(m => m.hari === hariEfektif && m.shift === 1);
+    const shift2Available = hariEfektif !== 'Jumat';
+    const shift2 = shift2Available ? allMembers.filter(m => m.hari === hariEfektif && m.shift === 2) : [];
+    const shift2Unlocked = isShift2UnlockedRekap(hariEfektif);
+
+    let teks = `📋 *Rekap Piket UKS PMR*\n🗓️ ${hariEfektif}, ${tanggalStr}\n\n`;
+
+    teks += `☀️ *Shift 1 (Istirahat Pertama)*\n`;
+    if (shift1.length === 0) {
+      teks += `_Belum ada petugas diatur nih_ 😅\n`;
+    } else {
+      shift1.forEach((m, i) => {
+        const status = tentukanStatus(m.nama, hariEfektif, 1);
+        teks += `${i+1}. ${m.nama} (Fase ${m.fase}) ${emojiStatusRekap(status)} ${labelStatusRekap(status)}\n`;
+      });
+    }
+
+    teks += `\n🌤️ *Shift 2 (Istirahat Kedua)*\n`;
+    if (!shift2Available) {
+      teks += `_Hari Jumat cuma 1 shift kok, udah kelar!_ 🎉\n`;
+    } else if (!shift2Unlocked) {
+      teks += `🔒 _Masih ke-lock, sabar nungguin shift 2 mulai dulu yaa~_\n`;
+    } else if (shift2.length === 0) {
+      teks += `_Belum ada petugas diatur nih_ 😅\n`;
+    } else {
+      shift2.forEach((m, i) => {
+        const status = tentukanStatus(m.nama, hariEfektif, 2);
+        teks += `${i+1}. ${m.nama} (Fase ${m.fase}) ${emojiStatusRekap(status)} ${labelStatusRekap(status)}\n`;
+      });
+    }
+
+    teks += `\nMakasih udah jagain UKS kita hari ini, semangat terus yaa~ 🩹💪`;
+
+    area.value = teks;
+    badge.innerText = !shift2Available ? 'Jumat (1 Shift)' : (shift2Unlocked ? 'Full Rekap ✨' : 'Shift 1 Aja 🔒');
+  }
+
+  async function salinRekapWA() {
+    const area = document.getElementById('rekapWaTextArea');
+    try {
+      await navigator.clipboard.writeText(area.value);
+      alert('Rekap berhasil disalin! Tinggal paste ke WA~ 📋');
+    } catch (e) {
+      area.select();
+      document.execCommand('copy');
+      alert('Rekap berhasil disalin (fallback)! Tinggal paste ke WA~ 📋');
+    }
+  }
 
   const canvas = document.getElementById('physicsCanvas');
   const ctx = canvas.getContext('2d');

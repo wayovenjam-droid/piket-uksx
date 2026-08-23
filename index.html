@@ -57,8 +57,8 @@
     .wa-btn { background: #25D366; color: white; border: none; padding: 10px 16px; border-radius: 12px; font-size: 13px; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(37,211,102,0.2); }
     .form-group { margin-bottom: 15px; text-align: left; }
     label { font-weight: 700; font-size: 13px; margin-bottom: 6px; display: block; }
-    input, select { width: 100%; padding: 12px 14px; border: 2px solid var(--border); border-radius: 12px; font-size: 14px; outline: none; }
-    input:focus, select:focus { border-color: var(--primary); }
+    input, select, textarea { width: 100%; padding: 12px 14px; border: 2px solid var(--border); border-radius: 12px; font-size: 14px; outline: none; font-family: inherit; }
+    input:focus, select:focus, textarea:focus { border-color: var(--primary); }
     .btn-aesthetic { background: linear-gradient(135deg, var(--primary), var(--primary-hover)); color: white; border: none; padding: 14px; border-radius: 14px; font-weight: 700; font-size: 14px; cursor: pointer; width: 100%; }
     .btn-aesthetic:disabled { opacity: 0.6; cursor: not-allowed; }
     .status-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
@@ -85,6 +85,17 @@
     .btn-terima { background: #DCFCE7; color: #15803D; }
     .btn-tolak { background: #FEE2E2; color: #B91C1C; }
     .btn-hapus-foto { background: #F3F4F6; color: #374151; }
+    .marquee-wrap { overflow: hidden; white-space: nowrap; box-sizing: border-box; border-radius: 12px; padding: 10px 0; margin-bottom: 15px; }
+    .marquee-public { background: var(--primary-light); }
+    .marquee-internal { background: #FEF3C7; }
+    .marquee-track { display: inline-block; padding-left: 100%; animation: marqueeScroll 20s linear infinite; font-weight: 700; font-size: 13px; }
+    .marquee-public .marquee-track { color: var(--primary); }
+    .marquee-internal .marquee-track { color: #92400E; }
+    @keyframes marqueeScroll { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
+    .pengumuman-editor-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+    .pengumuman-editor-row:last-child { margin-bottom: 0; }
+    .pengumuman-editor-row textarea { resize: vertical; min-height: 50px; font-size: 13px; }
+    .pengumuman-editor-row button { width: auto; padding: 8px 16px; font-size: 12px; align-self: flex-end; }
   </style>
 </head>
 <body>
@@ -128,9 +139,14 @@
     </div>
   </div>
 
+  <!-- RUNNING TEXT PUBLIK: kelihatan semua orang (siswa & admin manapun), di semua tab -->
+  <div class="marquee-wrap marquee-public" id="marqueePublicBox" style="display:none;">
+    <div class="marquee-track" id="marqueePublicText"></div>
+  </div>
+
   <div class="nav-tabs">
     <button class="tab-btn active" id="tabSiswaBtn" onclick="switchTab('siswa', this)"><i class="fa-solid fa-calendar-day"></i> Jadwal</button>
-    <button class="tab-btn" onclick="switchTab('piket', this)"><i class="fa-solid fa-camera"></i> Bukti Piket</button>
+    <button class="tab-btn" id="tabPiketBtn" onclick="switchTab('piket', this)"><i class="fa-solid fa-camera"></i> Bukti Piket</button>
     <button class="tab-btn" id="tabAdminBtn" style="display:none;" onclick="switchTab('admin', this)"><i class="fa-solid fa-user-shield"></i> Panel Admin</button>
   </div>
 
@@ -155,7 +171,6 @@
 
     <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 12px;">Petugas Piket Hari <span id="lblSelectedDay">Senin</span></h3>
 
-    <!-- LOG/TABEL: Shift 1 di atas, garis pemisah, Shift 2 di bawah -->
     <div style="background: white; border: 1px solid var(--border); border-radius: 16px; padding: 15px;" id="siswaGridContainer">
       <div>
         <div class="shift-log-header">
@@ -215,6 +230,11 @@
       </div>
     </div>
 
+    <!-- INTERNAL ANNOUNCEMENT: cuma kelihatan buat admin yang lagi login (semua level), isinya ditulis Master -->
+    <div class="marquee-wrap marquee-internal" id="marqueeInternalBox" style="display:none;">
+      <div class="marquee-track" id="marqueeInternalText"></div>
+    </div>
+
     <div id="masterOverrideBox" class="master-panel" style="display: none; flex-direction: column; align-items: stretch;">
       <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 12px;">
         <div>
@@ -243,10 +263,27 @@
       </div>
     </div>
 
-    <!-- Panel ini cuma kelihatan buat Admin id=1 (Master) -->
+    <!-- EDITOR RUNNING TEXT: cuma kelihatan buat Master (id=1) -->
+    <div id="pengumumanEditorBox" class="master-panel" style="display: none; flex-direction: column; align-items: stretch;">
+      <h5 style="font-weight: 800; margin-bottom: 12px;"><i class="fa-solid fa-bullhorn"></i> Editor Running Text</h5>
+
+      <div class="pengumuman-editor-row">
+        <label style="font-size:12px;">Running Text Publik (kelihatan semua orang & semua admin)</label>
+        <textarea id="inputPengumumanPublik" placeholder="Contoh: Piket hari ini berjalan lancar, terima kasih!"></textarea>
+        <button class="btn-aesthetic" onclick="simpanPengumuman('publik')">Simpan Publik</button>
+      </div>
+
+      <div class="pengumuman-editor-row">
+        <label style="font-size:12px;">Internal Announcement (cuma kelihatan sesama admin yang login)</label>
+        <textarea id="inputPengumumanInternal" placeholder="Contoh: Tolong cek stok obat P3K minggu ini"></textarea>
+        <button class="btn-aesthetic" onclick="simpanPengumuman('internal')">Simpan Internal</button>
+      </div>
+    </div>
+
+    <!-- TINJAUAN LAPORAN: kelihatan SEMUA admin yang login, tapi tombol aksi cuma buat Master -->
     <div id="riwayatLaporanPanel" style="display: none; background: #FDFDFD; border: 1px solid var(--border); padding: 15px; border-radius: 16px; margin-bottom: 20px;">
       <h4 style="font-size: 14px; font-weight: 800; margin-bottom: 10px;">
-        <i class="fa-solid fa-images"></i> Riwayat Laporan Piket Hari Ini <small style="font-weight:600; color:#aaa;">(Khusus Master)</small>
+        <i class="fa-solid fa-images"></i> Tinjauan Laporan Piket Hari Ini
       </h4>
       <div id="riwayatLaporanBox" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px;">
         <span style="font-size: 12px; color: #aaa;">Memuat...</span>
@@ -360,6 +397,7 @@
   setInterval(async () => {
     await muatLaporanHariIni();
     renderShiftSiswa();
+    await muatPengumuman();
   }, 30000);
 
   function updateDateDisplay() {
@@ -383,6 +421,7 @@
 
     updateUIHariSiswa();
     muatDataSiswa();
+    muatPengumuman();
   }
 
   function bukaModalLogin() { document.getElementById('modalLogin').style.display = 'flex'; }
@@ -411,11 +450,18 @@
 
     const isMaster = (data.id === 1 || data.id === "1");
 
+    // Tab "Bukti Piket" cuma buat Master (testing) — admin lain nggak perlu, itu tugas siswa/petugas asli
+    document.getElementById('tabPiketBtn').style.display = isMaster ? 'flex' : 'none';
+
     document.getElementById('masterOverrideBox').style.display = isMaster ? 'flex' : 'none';
-    document.getElementById('riwayatLaporanPanel').style.display = isMaster ? 'block' : 'none';
+    document.getElementById('pengumumanEditorBox').style.display = isMaster ? 'flex' : 'none';
+
+    // Panel Tinjauan kelihatan buat SEMUA admin yang login
+    document.getElementById('riwayatLaporanPanel').style.display = 'block';
 
     switchTab('admin', document.getElementById('tabAdminBtn'));
     muatKelolaAdmin();
+    muatPengumuman();
   }
 
   async function prosesGantiPassword() {
@@ -481,7 +527,9 @@
   function logoutAdmin() {
     currentAdminSession = null;
     document.getElementById('tabAdminBtn').style.display = 'none';
+    document.getElementById('tabPiketBtn').style.display = 'flex'; // tampilkan lagi buat siswa/publik
     document.getElementById('masterOverrideBox').style.display = 'none';
+    document.getElementById('pengumumanEditorBox').style.display = 'none';
     document.getElementById('riwayatLaporanPanel').style.display = 'none';
     // isMasterOverride & masterTestingBadge sengaja TIDAK direset, biar simulasi tetap jalan pas cek sisi siswa
     switchTab('siswa', document.getElementById('tabSiswaBtn'));
@@ -517,7 +565,6 @@
     renderAdminBoxes();
   }
 
-  // Shift 2 & garis pemisah otomatis disembunyikan kalau hari Jumat (cuma ada 1 shift)
   function updateUIHariSiswa() {
     document.getElementById('lblSelectedDay').innerText = selectedHari;
     const shift2Box = document.getElementById('siswaShift2Box');
@@ -578,10 +625,52 @@
     laporanHariIni = data || [];
   }
 
+  // === RUNNING TEXT: publik (semua orang) + internal announcement (khusus admin login) ===
+  async function muatPengumuman() {
+    const { data } = await sb.from('pengumuman').select('*').eq('id', 1).single();
+    if (!data) return;
+
+    const pubBox = document.getElementById('marqueePublicBox');
+    const pubText = document.getElementById('marqueePublicText');
+    if (data.teks_publik && data.teks_publik.trim()) {
+      pubText.innerText = data.teks_publik;
+      pubBox.style.display = 'block';
+    } else {
+      pubBox.style.display = 'none';
+    }
+
+    const intBox = document.getElementById('marqueeInternalBox');
+    const intText = document.getElementById('marqueeInternalText');
+    if (currentAdminSession && data.teks_internal && data.teks_internal.trim()) {
+      intText.innerText = data.teks_internal;
+      intBox.style.display = 'block';
+    } else {
+      intBox.style.display = 'none';
+    }
+
+    const inputPub = document.getElementById('inputPengumumanPublik');
+    const inputInt = document.getElementById('inputPengumumanInternal');
+    if (inputPub && document.activeElement !== inputPub) inputPub.value = data.teks_publik || '';
+    if (inputInt && document.activeElement !== inputInt) inputInt.value = data.teks_internal || '';
+  }
+
+  async function simpanPengumuman(jenis) {
+    const value = jenis === 'publik'
+      ? document.getElementById('inputPengumumanPublik').value
+      : document.getElementById('inputPengumumanInternal').value;
+
+    const payload = jenis === 'publik' ? { teks_publik: value } : { teks_internal: value };
+    const { error } = await sb.from('pengumuman').update(payload).eq('id', 1);
+
+    if (error) {
+      alert('Gagal menyimpan: ' + error.message);
+      return;
+    }
+    alert('Running text berhasil disimpan!');
+    await muatPengumuman();
+  }
+
   // Tentukan status dot: 'merah' | 'kuning' | 'hijau' | null
-  // hijau = ada laporan yang sudah DITERIMA admin
-  // kuning = ada laporan pending (nunggu verifikasi) ATAU masih di jam shift & belum lapor
-  // merah = udah lewat jam shift & belum lapor sama sekali
   function tentukanStatus(nama, hari, shift) {
     const laporanOrang = laporanHariIni.filter(l => l.nama_petugas === nama);
 
@@ -601,7 +690,6 @@
     return 'merah';
   }
 
-  // Format LOG/TABEL: tiap baris = nama di kiri, dot status di kanan
   function renderShiftSiswa() {
     const s1 = allMembers.filter(m => m.hari === selectedHari && m.shift === 1);
     const s2 = allMembers.filter(m => m.hari === selectedHari && m.shift === 2);
@@ -641,15 +729,16 @@
       allMembers = data;
       renderAdminBoxes();
     }
-    const isMaster = currentAdminSession && (currentAdminSession.id === 1 || currentAdminSession.id === "1");
-    if (isMaster) muatRiwayatLaporan();
+    muatRiwayatLaporan();
   }
 
-  // Gallery riwayat foto laporan piket hari ini + panel Terima/Tolak/Hapus (khusus Master Admin id=1)
+  // Tinjauan foto laporan hari ini — SEMUA admin bisa lihat, tapi tombol aksi cuma buat Master (id=1)
   async function muatRiwayatLaporan() {
     const { data } = await sb.from('piket').select('*').eq('tanggal', tanggalHariIniStr()).order('created_at', { ascending: false });
     const box = document.getElementById('riwayatLaporanBox');
     if (!box) return;
+
+    const isMaster = currentAdminSession && (currentAdminSession.id === 1 || currentAdminSession.id === "1");
 
     if (!data || data.length === 0) {
       box.innerHTML = '<span style="font-size: 12px; color: #aaa;">Belum ada laporan piket hari ini</span>';
@@ -661,6 +750,14 @@
       const badgeClass = status === 'diterima' ? 'badge-diterima' : (status === 'ditolak' ? 'badge-ditolak' : 'badge-pending');
       const badgeText = status === 'diterima' ? 'Diterima' : (status === 'ditolak' ? 'Ditolak' : 'Menunggu');
 
+      const aksiHtml = isMaster ? `
+        <div class="riwayat-actions">
+          <button class="btn-terima" onclick="verifikasiLaporan(${r.id}, 'diterima')"><i class="fa-solid fa-check"></i> Terima</button>
+          <button class="btn-tolak" onclick="verifikasiLaporan(${r.id}, 'ditolak')"><i class="fa-solid fa-xmark"></i> Tolak</button>
+        </div>
+        <button class="btn-hapus-foto" style="width:100%; margin-top:4px;" onclick="hapusLaporan(${r.id}, '${r.foto_url}')"><i class="fa-solid fa-trash"></i> Hapus</button>
+      ` : '';
+
       return `
         <div class="riwayat-card">
           <img src="${r.foto_url}" loading="lazy" />
@@ -668,11 +765,7 @@
             <b>${r.nama_petugas}</b><br>
             <span style="color: #888;">${r.catatan || '-'}</span><br>
             <span class="riwayat-badge ${badgeClass}">${badgeText}</span>
-            <div class="riwayat-actions">
-              <button class="btn-terima" onclick="verifikasiLaporan(${r.id}, 'diterima')"><i class="fa-solid fa-check"></i> Terima</button>
-              <button class="btn-tolak" onclick="verifikasiLaporan(${r.id}, 'ditolak')"><i class="fa-solid fa-xmark"></i> Tolak</button>
-            </div>
-            <button class="btn-hapus-foto" style="width:100%; margin-top:4px;" onclick="hapusLaporan(${r.id}, '${r.foto_url}')"><i class="fa-solid fa-trash"></i> Hapus</button>
+            ${aksiHtml}
           </div>
         </div>
       `;
@@ -704,7 +797,6 @@
     renderShiftSiswa();
   }
 
-  // shiftUntukStatus: 1 atau 2 kalau kartu ini ada di zona Shift 1/2 (biar dikasih dot status), null kalau di Unassigned
   function buatKartuAnggota(m, shiftUntukStatus) {
     const card = document.createElement('div');
     card.className = 'draggable-card';

@@ -791,13 +791,14 @@
       const { data: urlData } = sb.storage.from('bukti-piket').getPublicUrl(namaFile);
       const fotoUrl = urlData.publicUrl;
 
-      const { error: errInsert } = await sb.from('piket').insert([{
-        tanggal: tanggalHariIniStr(),
-        nama_petugas: nama,
-        fase: fase,
-        catatan: catatan,
-        foto_url: fotoUrl
-      }]);
+     const { error: errInsert } = await sb.from('piket').insert([{
+  tanggal: tanggalHariIniStr(),
+  nama_petugas: nama,
+  fase: fase,
+  catatan: catatan,
+  kondisi_uks: catatan,
+  foto_url: fotoUrl
+}]);
 
       if (errInsert) throw errInsert;
 

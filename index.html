@@ -14,7 +14,7 @@
       --bg: #FAFAFC; --card-bg: #FFFFFF; --text: #2D3142; --text-muted: #9C9EB9; --border: #E5E7EB;
       --shadow: 0 10px 30px rgba(255, 107, 0, 0.08);
     }
-    * { box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; padding: 0; transition: all 0.2s ease; }
+    * { box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; padding: 0; transition: all 0.2s ease; -webkit-tap-highlight-color: transparent; }
     body { background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
     #welcomeScreen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 9999; display: flex; align-items: center; justify-content: center; background: radial-gradient(circle at center, #FFFFFF 0%, #FFF4EC 100%); overflow: hidden; }
     #physicsCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
@@ -22,23 +22,23 @@
     .hero-icon { width: 70px; height: 70px; background: linear-gradient(135deg, var(--primary), var(--accent)); color: white; border-radius: 22px; display: flex; align-items: center; justify-content: center; font-size: 32px; margin: 0 auto 20px; box-shadow: 0 10px 25px rgba(255, 107, 0, 0.3); }
     .hero-title { font-size: 26px; font-weight: 800; color: var(--text); margin-bottom: 8px; }
     .hero-subtitle { font-size: 14px; color: var(--text-muted); margin-bottom: 30px; font-weight: 600; }
-    .btn-hero { width: 100%; padding: 16px; border-radius: 18px; font-weight: 800; font-size: 15px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; border: none; margin-bottom: 12px; }
+    .btn-hero { width: 100%; padding: 16px; border-radius: 18px; font-weight: 800; font-size: 15px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; border: none; margin-bottom: 12px; touch-action: manipulation; }
     .btn-hero-admin { background: linear-gradient(135deg, var(--primary), var(--primary-hover)); color: white; box-shadow: 0 10px 25px rgba(255, 107, 0, 0.25); }
     .btn-hero-siswa { background: rgba(255, 255, 255, 0.9); color: var(--text); border: 2px solid var(--border); }
     .app-container { max-width: 1200px; margin: 20px auto; background: var(--card-bg); border-radius: 24px; padding: 25px; box-shadow: var(--shadow); border: 1px solid var(--border); display: none; }
-    .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.4); backdrop-filter: blur(8px); z-index: 10000; display: none; align-items: center; justify-content: center; }
-    .modal-card { background: white; border-radius: 24px; padding: 30px; width: 90%; max-width: 400px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.4); backdrop-filter: blur(8px); z-index: 10000; display: none; align-items: center; justify-content: center; padding: 16px; }
+    .modal-card { background: white; border-radius: 24px; padding: 30px; width: 90%; max-width: 400px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); max-height: 90vh; overflow-y: auto; }
     .header-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
     .brand-title { font-size: 22px; font-weight: 800; display: flex; align-items: center; gap: 10px; color: var(--text); }
     .brand-title i { color: var(--primary); }
     .time-badge { background: var(--primary-light); color: var(--primary); padding: 8px 16px; border-radius: 30px; font-weight: 700; font-size: 13px; }
     .nav-tabs { display: flex; gap: 10px; background: var(--primary-light); padding: 6px; border-radius: 16px; margin-bottom: 25px; }
-    .tab-btn { flex: 1; padding: 12px; border: none; background: transparent; color: var(--text-muted); font-weight: 700; border-radius: 12px; cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .tab-btn { flex: 1; padding: 12px; border: none; background: transparent; color: var(--text-muted); font-weight: 700; border-radius: 12px; cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center; gap: 8px; touch-action: manipulation; }
     .tab-btn.active { background: var(--card-bg); color: var(--primary); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
     .view-section { display: none; }
     .view-section.active { display: block; }
-    .day-selector-bar { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 20px; }
-    .day-chip { padding: 10px 18px; background: #F0F0F5; border-radius: 12px; font-weight: 700; font-size: 13px; color: var(--text-muted); cursor: pointer; border: 2px solid transparent; white-space: nowrap; }
+    .day-selector-bar { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 20px; -webkit-overflow-scrolling: touch; }
+    .day-chip { padding: 10px 18px; background: #F0F0F5; border-radius: 12px; font-weight: 700; font-size: 13px; color: var(--text-muted); cursor: pointer; border: 2px solid transparent; white-space: nowrap; touch-action: manipulation; }
     .day-chip.active { background: var(--primary-light); color: var(--primary); border-color: var(--primary); }
     .admin-4col-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 15px; }
     @media (max-width: 576px) { .admin-4col-grid { grid-template-columns: 1fr; } }
@@ -50,16 +50,16 @@
     .draggable-card:active { cursor: grabbing; }
     .draggable-card.sortable-drag, .draggable-card.sortable-chosen { background: #FFF4EC; opacity: 0.9; }
     .draggable-card.sortable-ghost { opacity: 0.35; }
-    .card-top { display: flex; justify-content: space-between; align-items: center; }
-    .delete-btn { color: #EF4444; cursor: pointer; padding: 2px 6px; }
-    .quick-move-select { font-size: 11px; padding: 4px 6px; border-radius: 8px; border: 1px solid #D1D5DB; background: #F3F4F6; color: #374151; font-weight: 600; cursor: pointer; }
+    .card-top { display: flex; justify-content: space-between; align-items: center; gap: 6px; }
+    .delete-btn { color: #EF4444; cursor: pointer; padding: 6px 8px; font-size: 14px; touch-action: manipulation; flex-shrink: 0; }
+    .quick-move-select { font-size: 13px; padding: 6px 8px; border-radius: 8px; border: 1px solid #D1D5DB; background: #F3F4F6; color: #374151; font-weight: 600; cursor: pointer; touch-action: manipulation; }
     .master-panel { background: #E8F0FE; border: 1px solid #1A73E8; padding: 14px 18px; border-radius: 16px; font-size: 13px; color: #1967D2; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
-    .wa-btn { background: #25D366; color: white; border: none; padding: 10px 16px; border-radius: 12px; font-size: 13px; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(37,211,102,0.2); cursor: pointer; }
+    .wa-btn { background: #25D366; color: white; border: none; padding: 10px 16px; border-radius: 12px; font-size: 13px; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(37,211,102,0.2); cursor: pointer; touch-action: manipulation; }
     .form-group { margin-bottom: 15px; text-align: left; }
     label { font-weight: 700; font-size: 13px; margin-bottom: 6px; display: block; }
-    input, select, textarea { width: 100%; padding: 12px 14px; border: 2px solid var(--border); border-radius: 12px; font-size: 14px; outline: none; font-family: inherit; }
+    input, select, textarea { width: 100%; padding: 12px 14px; border: 2px solid var(--border); border-radius: 12px; font-size: 16px; outline: none; font-family: inherit; }
     input:focus, select:focus, textarea:focus { border-color: var(--primary); }
-    .btn-aesthetic { background: linear-gradient(135deg, var(--primary), var(--primary-hover)); color: white; border: none; padding: 14px; border-radius: 14px; font-weight: 700; font-size: 14px; cursor: pointer; width: 100%; }
+    .btn-aesthetic { background: linear-gradient(135deg, var(--primary), var(--primary-hover)); color: white; border: none; padding: 14px; border-radius: 14px; font-weight: 700; font-size: 14px; cursor: pointer; width: 100%; touch-action: manipulation; }
     .btn-aesthetic:disabled { opacity: 0.6; cursor: not-allowed; }
     .status-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
     .status-merah { background: #EF4444; box-shadow: 0 0 6px rgba(239,68,68,0.6); }
@@ -81,10 +81,10 @@
     .badge-diterima { background: #DCFCE7; color: #15803D; }
     .badge-ditolak { background: #FEE2E2; color: #B91C1C; }
     .riwayat-actions { display: flex; gap: 4px; margin-top: 8px; }
-    .riwayat-actions button { flex: 1; border: none; border-radius: 8px; padding: 6px 4px; font-size: 10px; font-weight: 800; cursor: pointer; }
+    .riwayat-actions button { flex: 1; border: none; border-radius: 8px; padding: 7px 4px; font-size: 10px; font-weight: 800; cursor: pointer; touch-action: manipulation; }
     .btn-terima { background: #DCFCE7; color: #15803D; }
     .btn-tolak { background: #FEE2E2; color: #B91C1C; }
-    .btn-hapus-foto { background: #F3F4F6; color: #374151; }
+    .btn-hapus-foto { background: #F3F4F6; color: #374151; touch-action: manipulation; }
     .marquee-wrap { overflow: hidden; white-space: nowrap; box-sizing: border-box; border-radius: 12px; padding: 10px 0; margin-bottom: 15px; }
     .marquee-public { background: var(--primary-light); }
     .marquee-internal { background: #FEF3C7; }
@@ -96,13 +96,15 @@
     .pengumuman-editor-row:last-child { margin-bottom: 0; }
     .pengumuman-editor-row textarea { resize: vertical; min-height: 50px; font-size: 13px; }
     .pengumuman-editor-row button { width: auto; padding: 8px 16px; font-size: 12px; align-self: flex-end; }
-    .refresh-btn { background: #F3F4F6; border: none; width: 32px; height: 32px; min-width: 32px; border-radius: 10px; cursor: pointer; color: var(--text-muted); font-size: 14px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .refresh-btn { background: #F3F4F6; border: none; width: 36px; height: 36px; min-width: 36px; border-radius: 10px; cursor: pointer; color: var(--text-muted); font-size: 14px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; touch-action: manipulation; }
     .refresh-btn:hover { background: var(--primary-light); color: var(--primary); }
     .refresh-btn.spinning i { animation: spin 0.6s linear; }
     @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-    .section-header-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 12px; }
+    .section-header-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
     .admin-list-row { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; }
     .admin-list-badge-master { font-size: 10px; background: #1A73E8; color: white; padding: 2px 8px; border-radius: 20px; font-weight: 800; margin-left: 4px; }
+    .tips-text { font-size: 11px; color: var(--text-muted); font-style: italic; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+    .last-updated-text { font-size: 10.5px; color: #bbb; white-space: nowrap; }
   </style>
 </head>
 <body>
@@ -178,7 +180,10 @@
 
     <div class="section-header-row">
       <h3 style="font-size: 16px; font-weight: 800;">Petugas Piket Hari <span id="lblSelectedDay">Senin</span></h3>
-      <button class="refresh-btn" title="Refresh jadwal" onclick="refreshTombol(this, muatDataSiswa)"><i class="fa-solid fa-rotate"></i></button>
+      <div style="display:flex; align-items:center; gap:8px;">
+        <span id="lastUpdateJadwalSiswa" class="last-updated-text"></span>
+        <button class="refresh-btn" title="Refresh jadwal" onclick="refreshTombol(this, muatDataSiswa)"><i class="fa-solid fa-rotate"></i></button>
+      </div>
     </div>
 
     <div style="background: white; border: 1px solid var(--border); border-radius: 16px; padding: 15px;" id="siswaGridContainer">
@@ -233,10 +238,10 @@
         <p id="adminRole" style="font-size: 12px; color: var(--text-muted);"></p>
       </div>
       <div style="display: flex; gap: 8px;">
-        <button onclick="bukaModalGantiPass()" style="background: #E8F0FE; color: #1A73E8; border: none; padding: 8px 14px; border-radius: 10px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+        <button onclick="bukaModalGantiPass()" style="background: #E8F0FE; color: #1A73E8; border: none; padding: 8px 14px; border-radius: 10px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; touch-action: manipulation;">
           <i class="fa-solid fa-key"></i> Ganti Pass
         </button>
-        <button onclick="logoutAdmin()" style="background: #FCE8E6; color: #D93025; border: none; padding: 8px 14px; border-radius: 10px; font-weight: 700; cursor: pointer;">Logout</button>
+        <button onclick="logoutAdmin()" style="background: #FCE8E6; color: #D93025; border: none; padding: 8px 14px; border-radius: 10px; font-weight: 700; cursor: pointer; touch-action: manipulation;">Logout</button>
       </div>
     </div>
 
@@ -251,21 +256,21 @@
           <h5 style="font-weight: 800;"><i class="fa-solid fa-crown"></i> Master Override</h5>
           <p style="font-size: 11px; opacity: 0.8;">Simulasikan hari & shift manapun buat testing, tanpa nunggu jam asli.</p>
         </div>
-        <button onclick="toggleMasterOverride()" id="btnMasterOverride" style="background: #1A73E8; color: white; border: none; padding: 8px 14px; border-radius: 8px; font-weight: 700; cursor: pointer;">
+        <button onclick="toggleMasterOverride()" id="btnMasterOverride" style="background: #1A73E8; color: white; border: none; padding: 8px 14px; border-radius: 8px; font-weight: 700; cursor: pointer; touch-action: manipulation;">
           Aktifkan Master Override
         </button>
       </div>
 
       <div id="overridePickerBox" style="display: none; gap: 8px; flex-wrap: wrap; align-items: center;">
         <span style="font-size: 12px; font-weight: 700;">Simulasi:</span>
-        <select id="selectHariOverride" onchange="ubahOverride()" style="padding: 8px 10px; border-radius: 8px; border: 1px solid #1A73E8; font-size: 12px; font-weight: 700;">
+        <select id="selectHariOverride" onchange="ubahOverride()" style="padding: 8px 10px; border-radius: 8px; border: 1px solid #1A73E8; font-size: 12px; font-weight: 700; width:auto;">
           <option value="Senin">Senin</option>
           <option value="Selasa">Selasa</option>
           <option value="Rabu">Rabu</option>
           <option value="Kamis">Kamis</option>
           <option value="Jumat">Jumat</option>
         </select>
-        <select id="selectShiftOverride" onchange="ubahOverride()" style="padding: 8px 10px; border-radius: 8px; border: 1px solid #1A73E8; font-size: 12px; font-weight: 700;">
+        <select id="selectShiftOverride" onchange="ubahOverride()" style="padding: 8px 10px; border-radius: 8px; border: 1px solid #1A73E8; font-size: 12px; font-weight: 700; width:auto;">
           <option value="1">Shift 1</option>
           <option value="2">Shift 2</option>
         </select>
@@ -319,14 +324,18 @@
       </div>
     </div>
 
-    <!-- TINJAUAN LAPORAN: kelihatan SEMUA admin yang login. Semua admin bisa Terima; Tolak/Hapus khusus Master -->
+    <!-- TINJAUAN LAPORAN: kelihatan SEMUA admin yang login. Semua admin bisa Terima, Tolak, & Hapus foto -->
     <div id="riwayatLaporanPanel" style="display: none; background: #FDFDFD; border: 1px solid var(--border); padding: 15px; border-radius: 16px; margin-bottom: 20px;">
       <div class="section-header-row">
         <h4 style="font-size: 14px; font-weight: 800;">
           <i class="fa-solid fa-images"></i> Tinjauan Laporan Piket Hari Ini
         </h4>
-        <button class="refresh-btn" title="Refresh laporan" onclick="refreshTombol(this, muatRiwayatLaporan)"><i class="fa-solid fa-rotate"></i></button>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span id="lastUpdateRiwayat" class="last-updated-text"></span>
+          <button class="refresh-btn" title="Refresh laporan" onclick="refreshTombol(this, muatRiwayatLaporan)"><i class="fa-solid fa-rotate"></i></button>
+        </div>
       </div>
+      <p class="tips-text"><i class="fa-solid fa-lightbulb"></i> Tips: laporan yang statusnya udah Diterima/Ditolak boleh dihapus fotonya biar hemat storage ya~</p>
       <div id="riwayatLaporanBox" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px;">
         <span style="font-size: 12px; color: #aaa;">Memuat...</span>
       </div>
@@ -357,8 +366,12 @@
         <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">
           *Tarik kartu ke kolom tujuan (bisa pakai jari di HP) atau gunakan menu pilihan cepat di kartu. Dot warna di kartu Shift 1/2 nunjukin status piket hari ini.
         </p>
+        <span id="lastUpdateAdminJadwal" class="last-updated-text"></span>
       </div>
-      <button class="refresh-btn" title="Refresh data anggota" onclick="refreshTombol(this, muatKelolaAdmin)"><i class="fa-solid fa-rotate"></i></button>
+      <div style="display:flex; gap:8px;">
+        <button class="refresh-btn" title="Refresh data anggota" onclick="refreshTombol(this, muatKelolaAdmin)"><i class="fa-solid fa-rotate"></i></button>
+        <button class="refresh-btn" title="Kosongkan jadwal hari ini" style="color:#D93025;" onclick="konfirmasiKosongkanJadwal()"><i class="fa-solid fa-broom"></i></button>
+      </div>
     </div>
 
     <div class="admin-4col-grid">
@@ -460,6 +473,12 @@
     fungsiRefresh();
   }
 
+  // Nempelin label "Update: HH:MM:SS" di panel terkait, dipanggil tiap data beneran baru di-fetch
+  function stampUpdate(labelId) {
+    const el = document.getElementById(labelId);
+    if (el) el.innerText = 'Update: ' + new Date().toLocaleTimeString('id-ID');
+  }
+
   function updateDateDisplay() {
     const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
     document.getElementById('currentDateDisplay').innerText = new Date().toLocaleDateString('id-ID', options);
@@ -543,7 +562,7 @@
       muatDaftarAdmin();
     }
 
-    // Panel Tinjauan kelihatan buat SEMUA admin yang login (Terima bisa dipencet semua, Tolak/Hapus khusus Master)
+    // Panel Tinjauan kelihatan buat SEMUA admin yang login (Terima/Tolak/Hapus bisa dipencet semua admin)
     document.getElementById('riwayatLaporanPanel').style.display = 'block';
 
     switchTab('admin', document.getElementById('tabAdminBtn'));
@@ -709,6 +728,7 @@
       await muatLaporanHariIni();
       renderShiftSiswa();
       populateDropdownPiket();
+      stampUpdate('lastUpdateJadwalSiswa');
     }
   }
 
@@ -855,19 +875,20 @@
     }
     muatRiwayatLaporan();
     generateRekapWA();
+    stampUpdate('lastUpdateAdminJadwal');
   }
 
-  // Tinjauan foto laporan hari ini — SEMUA admin bisa lihat & Terima; Tolak/Hapus khusus Master (id=1)
+  // Tinjauan foto laporan hari ini — SEMUA admin yang login bisa Terima, Tolak, & Hapus
   async function muatRiwayatLaporan() {
     const { data } = await sb.from('piket').select('*').eq('tanggal', tanggalHariIniStr()).order('created_at', { ascending: false });
     const box = document.getElementById('riwayatLaporanBox');
     if (!box) return;
 
-    const isMaster = currentAdminSession && (currentAdminSession.id === 1 || currentAdminSession.id === "1");
     const isAdminLoggedIn = !!currentAdminSession;
 
     if (!data || data.length === 0) {
       box.innerHTML = '<span style="font-size: 12px; color: #aaa;">Belum ada laporan piket hari ini</span>';
+      stampUpdate('lastUpdateRiwayat');
       return;
     }
 
@@ -876,23 +897,13 @@
       const badgeClass = status === 'diterima' ? 'badge-diterima' : (status === 'ditolak' ? 'badge-ditolak' : 'badge-pending');
       const badgeText = status === 'diterima' ? 'Diterima' : (status === 'ditolak' ? 'Ditolak' : 'Menunggu');
 
-      let aksiHtml = '';
-      if (isMaster) {
-        aksiHtml = `
-          <div class="riwayat-actions">
-            <button class="btn-terima" onclick="verifikasiLaporan(${r.id}, 'diterima')"><i class="fa-solid fa-check"></i> Terima</button>
-            <button class="btn-tolak" onclick="verifikasiLaporan(${r.id}, 'ditolak')"><i class="fa-solid fa-xmark"></i> Tolak</button>
-          </div>
-          <button class="btn-hapus-foto" style="width:100%; margin-top:4px;" onclick="hapusLaporan(${r.id}, '${r.foto_url}')"><i class="fa-solid fa-trash"></i> Hapus</button>
-        `;
-      } else if (isAdminLoggedIn) {
-        // Admin biasa (bukan Master) tetap bisa Terima laporan
-        aksiHtml = `
-          <div class="riwayat-actions">
-            <button class="btn-terima" style="flex: 1 1 100%;" onclick="verifikasiLaporan(${r.id}, 'diterima')"><i class="fa-solid fa-check"></i> Terima</button>
-          </div>
-        `;
-      }
+      const aksiHtml = isAdminLoggedIn ? `
+        <div class="riwayat-actions">
+          <button class="btn-terima" onclick="verifikasiLaporan(${r.id}, 'diterima')"><i class="fa-solid fa-check"></i> Terima</button>
+          <button class="btn-tolak" onclick="verifikasiLaporan(${r.id}, 'ditolak')"><i class="fa-solid fa-xmark"></i> Tolak</button>
+        </div>
+        <button class="btn-hapus-foto" style="width:100%; margin-top:4px;" title="⚠️ Hapus foto permanen — cocok dipakai kalau status udah Diterima/Ditolak biar hemat storage" onclick="hapusLaporan(${r.id}, '${r.foto_url}')"><i class="fa-solid fa-trash"></i> Hapus</button>
+      ` : '';
 
       return `
         <div class="riwayat-card">
@@ -906,6 +917,8 @@
         </div>
       `;
     }).join('');
+
+    stampUpdate('lastUpdateRiwayat');
   }
 
   async function verifikasiLaporan(id, status) {
@@ -917,7 +930,7 @@
   }
 
   async function hapusLaporan(id, fotoUrl) {
-    if (!confirm('Hapus laporan & foto ini secara permanen?')) return;
+    if (!confirm('⚠️ Hapus laporan & foto ini secara PERMANEN? Data yang udah dihapus nggak bisa dibalikin lagi.')) return;
 
     try {
       const url = new URL(fotoUrl);
@@ -933,6 +946,31 @@
     await muatLaporanHariIni();
     renderShiftSiswa();
     generateRekapWA();
+  }
+
+  // === KOSONGKAN JADWAL HARI INI (buat hari yang lagi dibuka di panel Atur Jadwal) ===
+  function konfirmasiKosongkanJadwal() {
+    const anggotaHariIni = allMembers.filter(m => m.hari === selectedAdminHari && (m.shift === 1 || m.shift === 2));
+    if (anggotaHariIni.length === 0) {
+      alert(`Jadwal hari ${selectedAdminHari} udah kosong kok~`);
+      return;
+    }
+    const ok = confirm(`⚠️ Yakin mau kosongin jadwal hari ${selectedAdminHari}?\n\n${anggotaHariIni.length} petugas bakal balik ke kolom Unassigned. Tindakan ini nggak bisa dibatalin~`);
+    if (ok) kosongkanJadwalHariIni();
+  }
+
+  async function kosongkanJadwalHariIni() {
+    const idAnggota = allMembers.filter(m => m.hari === selectedAdminHari && (m.shift === 1 || m.shift === 2)).map(m => m.id);
+    if (idAnggota.length === 0) return;
+
+    const { error } = await sb.from('members').update({ hari: null, shift: 0 }).in('id', idAnggota);
+
+    if (error) {
+      alert('Gagal mengosongkan jadwal: ' + error.message);
+      return;
+    }
+    alert(`Sip! Jadwal hari ${selectedAdminHari} udah dikosongin~ 🧹`);
+    await muatKelolaAdmin();
   }
 
   function buatKartuAnggota(m, shiftUntukStatus) {
@@ -951,7 +989,7 @@
     card.innerHTML = `
       <div class="card-top">
         <span>${m.nama} <small style="color:#888;">(Fase ${m.fase})</small>${dotHtml}</span>
-        <i class="fa-solid fa-trash delete-btn" onclick="hapusAnggota(${m.id},'${m.nama.replace(/'/g, "\\'")}')"></i>
+        <i class="fa-solid fa-trash delete-btn" title="⚠️ Hapus data permanen, hati-hati!" onclick="hapusAnggota(${m.id},'${m.nama.replace(/'/g, "\\'")}')"></i>
       </div>
       <select class="quick-move-select" onchange="quickPindahShift(${m.id}, this.value)">
         <option value="0" ${m.shift === 0 || m.hari !== selectedAdminHari ? 'selected' : ''}>Unassigned</option>
@@ -1063,7 +1101,7 @@
   };
 
   async function hapusAnggota(id, nama) {
-    if(confirm(`Hapus ${nama} dari sistem?`)) {
+    if(confirm(`⚠️ Hapus ${nama} dari sistem secara PERMANEN?`)) {
       await sb.from('members').delete().eq('id', id);
       muatKelolaAdmin();
     }

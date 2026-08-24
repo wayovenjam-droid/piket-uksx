@@ -96,6 +96,13 @@
     .pengumuman-editor-row:last-child { margin-bottom: 0; }
     .pengumuman-editor-row textarea { resize: vertical; min-height: 50px; font-size: 13px; }
     .pengumuman-editor-row button { width: auto; padding: 8px 16px; font-size: 12px; align-self: flex-end; }
+    .refresh-btn { background: #F3F4F6; border: none; width: 32px; height: 32px; min-width: 32px; border-radius: 10px; cursor: pointer; color: var(--text-muted); font-size: 14px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .refresh-btn:hover { background: var(--primary-light); color: var(--primary); }
+    .refresh-btn.spinning i { animation: spin 0.6s linear; }
+    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    .section-header-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 12px; }
+    .admin-list-row { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; }
+    .admin-list-badge-master { font-size: 10px; background: #1A73E8; color: white; padding: 2px 8px; border-radius: 20px; font-weight: 800; margin-left: 4px; }
   </style>
 </head>
 <body>
@@ -169,7 +176,10 @@
       <span><span class="status-dot status-hijau"></span> Sudah Piket</span>
     </div>
 
-    <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 12px;">Petugas Piket Hari <span id="lblSelectedDay">Senin</span></h3>
+    <div class="section-header-row">
+      <h3 style="font-size: 16px; font-weight: 800;">Petugas Piket Hari <span id="lblSelectedDay">Senin</span></h3>
+      <button class="refresh-btn" title="Refresh jadwal" onclick="refreshTombol(this, muatDataSiswa)"><i class="fa-solid fa-rotate"></i></button>
+    </div>
 
     <div style="background: white; border: 1px solid var(--border); border-radius: 16px; padding: 15px;" id="siswaGridContainer">
       <div>
@@ -295,11 +305,28 @@
       </button>
     </div>
 
-    <!-- TINJAUAN LAPORAN: kelihatan SEMUA admin yang login, tapi tombol aksi cuma buat Master -->
+    <!-- DAFTAR SEMUA ADMIN: cuma kelihatan buat Master (id=1), narik langsung dari tabel admins -->
+    <div id="daftarAdminBox" class="master-panel" style="display: none; flex-direction: column; align-items: stretch;">
+      <div class="section-header-row" style="margin-bottom: 12px;">
+        <div>
+          <h5 style="font-weight: 800;"><i class="fa-solid fa-users-gear"></i> Daftar Semua Admin</h5>
+          <p style="font-size: 11px; opacity: 0.8;">Data langsung dari tabel <code>admins</code> di Supabase.</p>
+        </div>
+        <button class="refresh-btn" title="Refresh daftar admin" onclick="refreshTombol(this, muatDaftarAdmin)"><i class="fa-solid fa-rotate"></i></button>
+      </div>
+      <div id="daftarAdminList" style="display:flex; flex-direction:column; gap:8px;">
+        <span style="font-size: 12px; color: #aaa;">Memuat...</span>
+      </div>
+    </div>
+
+    <!-- TINJAUAN LAPORAN: kelihatan SEMUA admin yang login. Semua admin bisa Terima; Tolak/Hapus khusus Master -->
     <div id="riwayatLaporanPanel" style="display: none; background: #FDFDFD; border: 1px solid var(--border); padding: 15px; border-radius: 16px; margin-bottom: 20px;">
-      <h4 style="font-size: 14px; font-weight: 800; margin-bottom: 10px;">
-        <i class="fa-solid fa-images"></i> Tinjauan Laporan Piket Hari Ini
-      </h4>
+      <div class="section-header-row">
+        <h4 style="font-size: 14px; font-weight: 800;">
+          <i class="fa-solid fa-images"></i> Tinjauan Laporan Piket Hari Ini
+        </h4>
+        <button class="refresh-btn" title="Refresh laporan" onclick="refreshTombol(this, muatRiwayatLaporan)"><i class="fa-solid fa-rotate"></i></button>
+      </div>
       <div id="riwayatLaporanBox" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px;">
         <span style="font-size: 12px; color: #aaa;">Memuat...</span>
       </div>
@@ -322,12 +349,17 @@
       </form>
     </div>
 
-    <h4 style="font-size: 14px; font-weight: 800; margin-bottom: 5px;">
-      <i class="fa-solid fa-hand-pointer"></i> Atur Jadwal Hari <span id="lblAdminDay" style="color: var(--primary);">Senin</span>
-    </h4>
-    <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 15px;">
-      *Tarik kartu ke kolom tujuan (bisa pakai jari di HP) atau gunakan menu pilihan cepat di kartu. Dot warna di kartu Shift 1/2 nunjukin status piket hari ini.
-    </p>
+    <div class="section-header-row" style="margin-bottom: 5px; align-items: flex-start;">
+      <div>
+        <h4 style="font-size: 14px; font-weight: 800;">
+          <i class="fa-solid fa-hand-pointer"></i> Atur Jadwal Hari <span id="lblAdminDay" style="color: var(--primary);">Senin</span>
+        </h4>
+        <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">
+          *Tarik kartu ke kolom tujuan (bisa pakai jari di HP) atau gunakan menu pilihan cepat di kartu. Dot warna di kartu Shift 1/2 nunjukin status piket hari ini.
+        </p>
+      </div>
+      <button class="refresh-btn" title="Refresh data anggota" onclick="refreshTombol(this, muatKelolaAdmin)"><i class="fa-solid fa-rotate"></i></button>
+    </div>
 
     <div class="admin-4col-grid">
       <div class="col-box" id="boxContainerE" data-target-shift="0">
@@ -419,6 +451,15 @@
     await muatPengumuman();
   }, 30000);
 
+  // Helper umum buat semua tombol refresh: kasih efek spin sebentar + panggil fungsi refetch-nya
+  function refreshTombol(btnEl, fungsiRefresh) {
+    if (btnEl) {
+      btnEl.classList.add('spinning');
+      setTimeout(() => btnEl.classList.remove('spinning'), 600);
+    }
+    fungsiRefresh();
+  }
+
   function updateDateDisplay() {
     const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
     document.getElementById('currentDateDisplay').innerText = new Date().toLocaleDateString('id-ID', options);
@@ -490,13 +531,19 @@
 
     // Tab "Bukti Piket" cuma buat Master (testing) — admin lain nggak perlu, itu tugas siswa/petugas asli
     document.getElementById('tabPiketBtn').style.display = isMaster ? 'flex' : 'none';
+    // Double-safety: tombol kirim laporan piket juga disembunyikan buat admin non-master
+    document.getElementById('btnSubmitPiket').style.display = isMaster ? 'block' : 'none';
 
     document.getElementById('masterOverrideBox').style.display = isMaster ? 'flex' : 'none';
     document.getElementById('pengumumanEditorBox').style.display = isMaster ? 'flex' : 'none';
     document.getElementById('rekapWaBox').style.display = isMaster ? 'flex' : 'none';
-    if (isMaster) generateRekapWA();
+    document.getElementById('daftarAdminBox').style.display = isMaster ? 'flex' : 'none';
+    if (isMaster) {
+      generateRekapWA();
+      muatDaftarAdmin();
+    }
 
-    // Panel Tinjauan kelihatan buat SEMUA admin yang login
+    // Panel Tinjauan kelihatan buat SEMUA admin yang login (Terima bisa dipencet semua, Tolak/Hapus khusus Master)
     document.getElementById('riwayatLaporanPanel').style.display = 'block';
 
     switchTab('admin', document.getElementById('tabAdminBtn'));
@@ -570,9 +617,11 @@
     currentAdminSession = null;
     document.getElementById('tabAdminBtn').style.display = 'none';
     document.getElementById('tabPiketBtn').style.display = 'flex'; // tampilkan lagi buat siswa/publik
+    document.getElementById('btnSubmitPiket').style.display = 'block'; // tampilkan lagi buat siswa/publik
     document.getElementById('masterOverrideBox').style.display = 'none';
     document.getElementById('pengumumanEditorBox').style.display = 'none';
     document.getElementById('rekapWaBox').style.display = 'none';
+    document.getElementById('daftarAdminBox').style.display = 'none';
     document.getElementById('riwayatLaporanPanel').style.display = 'none';
     // isMasterOverride & masterTestingBadge sengaja TIDAK direset, biar simulasi tetap jalan pas cek sisi siswa
     switchTab('siswa', document.getElementById('tabSiswaBtn'));
@@ -714,6 +763,37 @@
     await muatPengumuman();
   }
 
+  // === DAFTAR SEMUA ADMIN (khusus Master id=1), narik langsung dari tabel admins ===
+  async function muatDaftarAdmin() {
+    const box = document.getElementById('daftarAdminList');
+    if (!box) return;
+    box.innerHTML = '<span style="font-size: 12px; color: #aaa;">Memuat...</span>';
+
+    const { data, error } = await sb.from('admins').select('id, nama, username, jabatan').order('id', { ascending: true });
+
+    if (error) {
+      box.innerHTML = `<span style="font-size: 12px; color: #EF4444;">Gagal memuat: ${error.message}</span>`;
+      return;
+    }
+    if (!data || data.length === 0) {
+      box.innerHTML = '<span style="font-size: 12px; color: #aaa;">Belum ada data admin</span>';
+      return;
+    }
+
+    box.innerHTML = data.map(a => {
+      const isMasterRow = (a.id === 1 || a.id === "1");
+      return `
+        <div class="admin-list-row">
+          <div>
+            <b style="font-size:13px;">${a.nama}</b>${isMasterRow ? '<span class="admin-list-badge-master">MASTER</span>' : ''}<br>
+            <span style="font-size:11px; color:var(--text-muted);">@${a.username} • ${a.jabatan || '-'}</span>
+          </div>
+          <span style="font-size:11px; color:#aaa;">ID: ${a.id}</span>
+        </div>
+      `;
+    }).join('');
+  }
+
   // Tentukan status dot: 'merah' | 'kuning' | 'hijau' | null
   function tentukanStatus(nama, hari, shift) {
     const laporanOrang = laporanHariIni.filter(l => l.nama_petugas === nama);
@@ -777,13 +857,14 @@
     generateRekapWA();
   }
 
-  // Tinjauan foto laporan hari ini — SEMUA admin bisa lihat, tapi tombol aksi cuma buat Master (id=1)
+  // Tinjauan foto laporan hari ini — SEMUA admin bisa lihat & Terima; Tolak/Hapus khusus Master (id=1)
   async function muatRiwayatLaporan() {
     const { data } = await sb.from('piket').select('*').eq('tanggal', tanggalHariIniStr()).order('created_at', { ascending: false });
     const box = document.getElementById('riwayatLaporanBox');
     if (!box) return;
 
     const isMaster = currentAdminSession && (currentAdminSession.id === 1 || currentAdminSession.id === "1");
+    const isAdminLoggedIn = !!currentAdminSession;
 
     if (!data || data.length === 0) {
       box.innerHTML = '<span style="font-size: 12px; color: #aaa;">Belum ada laporan piket hari ini</span>';
@@ -795,13 +876,23 @@
       const badgeClass = status === 'diterima' ? 'badge-diterima' : (status === 'ditolak' ? 'badge-ditolak' : 'badge-pending');
       const badgeText = status === 'diterima' ? 'Diterima' : (status === 'ditolak' ? 'Ditolak' : 'Menunggu');
 
-      const aksiHtml = isMaster ? `
-        <div class="riwayat-actions">
-          <button class="btn-terima" onclick="verifikasiLaporan(${r.id}, 'diterima')"><i class="fa-solid fa-check"></i> Terima</button>
-          <button class="btn-tolak" onclick="verifikasiLaporan(${r.id}, 'ditolak')"><i class="fa-solid fa-xmark"></i> Tolak</button>
-        </div>
-        <button class="btn-hapus-foto" style="width:100%; margin-top:4px;" onclick="hapusLaporan(${r.id}, '${r.foto_url}')"><i class="fa-solid fa-trash"></i> Hapus</button>
-      ` : '';
+      let aksiHtml = '';
+      if (isMaster) {
+        aksiHtml = `
+          <div class="riwayat-actions">
+            <button class="btn-terima" onclick="verifikasiLaporan(${r.id}, 'diterima')"><i class="fa-solid fa-check"></i> Terima</button>
+            <button class="btn-tolak" onclick="verifikasiLaporan(${r.id}, 'ditolak')"><i class="fa-solid fa-xmark"></i> Tolak</button>
+          </div>
+          <button class="btn-hapus-foto" style="width:100%; margin-top:4px;" onclick="hapusLaporan(${r.id}, '${r.foto_url}')"><i class="fa-solid fa-trash"></i> Hapus</button>
+        `;
+      } else if (isAdminLoggedIn) {
+        // Admin biasa (bukan Master) tetap bisa Terima laporan
+        aksiHtml = `
+          <div class="riwayat-actions">
+            <button class="btn-terima" style="flex: 1 1 100%;" onclick="verifikasiLaporan(${r.id}, 'diterima')"><i class="fa-solid fa-check"></i> Terima</button>
+          </div>
+        `;
+      }
 
       return `
         <div class="riwayat-card">

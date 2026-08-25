@@ -238,7 +238,7 @@
       </div>
       <div class="form-group">
         <label>Foto Bukti Piket:</label>
-        <input type="file" id="fotoPiket" accept="image/*" required>
+            <input type="file" id="fotoPiket" accept="image/*" capture="environment" required>
       </div>
       <button type="submit" class="btn-aesthetic" id="btnSubmitPiket"><i class="fa-solid fa-paper-plane"></i> Kirim Laporan Piket</button>
     </form>
@@ -343,11 +343,12 @@
         <h4 style="font-size: 14px; font-weight: 800;">
           <i class="fa-solid fa-images"></i> Tinjauan Laporan Piket Hari Ini
         </h4>
-        <div style="display:flex; align-items:center; gap:8px;">
+              <div style="display:flex; align-items:center; gap:8px;">
           <span id="lastUpdateRiwayat" class="last-updated-text"></span>
-          <button class="refresh-btn" title="Refresh laporan" onclick="refreshTombol(this, muatRiwayatLaporan)"><i class="fa-solid fa-rotate"></i></button>
+          <button class="btn-refresh-text" onclick="refreshTombol(this, muatRiwayatLaporan)"><i class="fa-solid fa-rotate"></i> Refresh</button>
         </div>
       </div>
+      <p class="tips-text" style="color:#D93025; font-weight:700;"><i class="fa-solid fa-triangle-exclamation"></i> Jangan lupa tekan tombol Refresh secara berkala ya — biar laporan baru yang masuk nggak kelewat!</p>
       <p class="tips-text"><i class="fa-solid fa-lightbulb"></i> Tips: laporan yang statusnya udah Diterima/Ditolak boleh dihapus fotonya biar hemat storage ya~</p>
       <div id="riwayatLaporanBox" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px;">
         <span style="font-size: 12px; color: #aaa;">Memuat...</span>
@@ -929,11 +930,13 @@
         <button class="btn-hapus-foto" style="width:100%; margin-top:4px;" title="⚠️ Hapus foto permanen — cocok dipakai kalau status udah Diterima/Ditolak biar hemat storage" onclick="hapusLaporan(${r.id}, '${r.foto_url}')"><i class="fa-solid fa-trash"></i> Hapus</button>
       ` : '';
 
+           const jamKirim = r.created_at ? new Date(r.created_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) : '-';
+
       return `
         <div class="riwayat-card">
           <img src="${r.foto_url}" loading="lazy" />
           <div class="riwayat-card-info">
-            <b>${r.nama_petugas}</b><br>
+            <b>${r.nama_petugas}</b> <span style="color:#aaa; font-weight:600;">• ${jamKirim}</span><br>
             <span style="color: #888;">${r.catatan || '-'}</span><br>
             <span class="riwayat-badge ${badgeClass}">${badgeText}</span>
             ${aksiHtml}

@@ -46,14 +46,14 @@
     .col-box { background: #F9FAFB; border: 2px dashed #D1D5DB; border-radius: 18px; padding: 15px; min-height: 200px; display: flex; flex-direction: column; transition: all 0.15s ease-in-out; }
     .col-box.drag-over { background: #FFE8D6 !important; border-color: var(--primary) !important; border-style: solid !important; box-shadow: 0 0 15px rgba(255, 107, 0, 0.25); transform: scale(1.01); }
     .col-header { font-weight: 800; font-size: 14px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; pointer-events: none; }
-     .card-list { flex: 1; overflow-y: auto; max-height: 220px; display: flex; flex-direction: column; gap: 10px; padding: 4px; min-height: 60px; -webkit-overflow-scrolling: touch; }
-  .draggable-card { pointer-events: auto; background: white; border: 1px solid var(--border); border-radius: 12px; padding: 12px; font-weight: 700; font-size: 13px; cursor: grab; box-shadow: 0 2px 6px rgba(0,0,0,0.04); display: flex; flex-direction: column; gap: 8px; user-select: none; touch-action: pan-y; }
+    .card-list { flex: 1; overflow-y: auto; overscroll-behavior: contain; touch-action: pan-y; max-height: 280px; display: flex; flex-direction: column; gap: 6px; padding: 4px; min-height: 60px; -webkit-overflow-scrolling: touch; }
+  .draggable-card { pointer-events: auto; background: white; border: 1px solid var(--border); border-radius: 10px; padding: 8px 10px; font-weight: 700; font-size: 12.5px; cursor: grab; box-shadow: 0 2px 6px rgba(0,0,0,0.04); display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 8px; user-select: none; touch-action: pan-y; }
     .draggable-card:active { cursor: grabbing; }
     .draggable-card.sortable-drag, .draggable-card.sortable-chosen { background: #FFF4EC; opacity: 0.9; }
     .draggable-card.sortable-ghost { opacity: 0.35; }
     .card-top { display: flex; justify-content: space-between; align-items: center; gap: 6px; }
     .delete-btn { color: #EF4444; cursor: pointer; padding: 6px 8px; font-size: 14px; touch-action: manipulation; flex-shrink: 0; }
-    .quick-move-select { font-size: 13px; padding: 6px 8px; border-radius: 8px; border: 1px solid #D1D5DB; background: #F3F4F6; color: #374151; font-weight: 600; cursor: pointer; touch-action: manipulation; }
+    .quick-move-select { font-size: 12px; padding: 5px 6px; border-radius: 8px; border: 1px solid #D1D5DB; background: #F3F4F6; color: #374151; font-weight: 600; cursor: pointer; touch-action: manipulation; width: auto; max-width: 105px; flex-shrink: 0; }
     .master-panel { background: #E8F0FE; border: 1px solid #1A73E8; padding: 14px 18px; border-radius: 16px; font-size: 13px; color: #1967D2; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
     .wa-btn { background: #25D366; color: white; border: none; padding: 10px 16px; border-radius: 12px; font-size: 13px; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(37,211,102,0.2); cursor: pointer; touch-action: manipulation; }
     .form-group { margin-bottom: 15px; text-align: left; }
@@ -1058,9 +1058,13 @@
       const inst = Sortable.create(el, {
         group: 'anggotaPiket',
         animation: 150,
-        delay: 80,
+        delay: 150,
         delayOnTouchOnly: true,
-        touchStartThreshold: 5,
+        touchStartThreshold: 10,
+        fallbackTolerance: 5,
+        scroll: true,
+        scrollSensitivity: 60,
+        scrollSpeed: 8,
         ghostClass: 'sortable-ghost',
         chosenClass: 'sortable-chosen',
         dragClass: 'sortable-drag',

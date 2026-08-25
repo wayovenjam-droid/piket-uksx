@@ -40,12 +40,13 @@
     .day-selector-bar { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 20px; -webkit-overflow-scrolling: touch; }
     .day-chip { padding: 10px 18px; background: #F0F0F5; border-radius: 12px; font-weight: 700; font-size: 13px; color: var(--text-muted); cursor: pointer; border: 2px solid transparent; white-space: nowrap; touch-action: manipulation; }
     .day-chip.active { background: var(--primary-light); color: var(--primary); border-color: var(--primary); }
-    .admin-4col-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 15px; }
-    @media (max-width: 576px) { .admin-4col-grid { grid-template-columns: 1fr; } }
-    .col-box { background: #F9FAFB; border: 2px dashed #D1D5DB; border-radius: 18px; padding: 15px; min-height: 260px; display: flex; flex-direction: column; transition: all 0.15s ease-in-out; }
+     .admin-2col-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; }
+    @media (max-width: 576px) { .admin-2col-grid { grid-template-columns: 1fr; } }
+    .admin-col-stack { display: flex; flex-direction: column; gap: 15px; }
+    .col-box { background: #F9FAFB; border: 2px dashed #D1D5DB; border-radius: 18px; padding: 15px; min-height: 200px; display: flex; flex-direction: column; transition: all 0.15s ease-in-out; }
     .col-box.drag-over { background: #FFE8D6 !important; border-color: var(--primary) !important; border-style: solid !important; box-shadow: 0 0 15px rgba(255, 107, 0, 0.25); transform: scale(1.01); }
     .col-header { font-weight: 800; font-size: 14px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; pointer-events: none; }
-   .card-list { flex: 1; overflow-y: auto; max-height: 320px; display: flex; flex-direction: column; gap: 10px; padding: 4px; min-height: 60px; -webkit-overflow-scrolling: touch; }
+     .card-list { flex: 1; overflow-y: auto; max-height: 220px; display: flex; flex-direction: column; gap: 10px; padding: 4px; min-height: 60px; -webkit-overflow-scrolling: touch; }
   .draggable-card { pointer-events: auto; background: white; border: 1px solid var(--border); border-radius: 12px; padding: 12px; font-weight: 700; font-size: 13px; cursor: grab; box-shadow: 0 2px 6px rgba(0,0,0,0.04); display: flex; flex-direction: column; gap: 8px; user-select: none; touch-action: pan-y; }
     .draggable-card:active { cursor: grabbing; }
     .draggable-card.sortable-drag, .draggable-card.sortable-chosen { background: #FFF4EC; opacity: 0.9; }
@@ -363,9 +364,10 @@
         <h4 style="font-size: 14px; font-weight: 800;">
           <i class="fa-solid fa-hand-pointer"></i> Atur Jadwal Hari <span id="lblAdminDay" style="color: var(--primary);">Senin</span>
         </h4>
-        <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">
+              <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">
           *Tarik kartu ke kolom tujuan (bisa pakai jari di HP) atau gunakan menu pilihan cepat di kartu. Dot warna di kartu Shift 1/2 nunjukin status piket hari ini.
         </p>
+        <p style="font-size: 12px; color: #D93025; font-weight: 700; margin-top: 6px;">⚠️ Pastikan hari yang dipilih (chip "Atur ..." di atas) sudah sesuai sebelum drag & drop, ya!</p>
         <span id="lastUpdateAdminJadwal" class="last-updated-text"></span>
       </div>
           <div style="display:flex; gap:8px;">
@@ -373,37 +375,41 @@
       </div>
     </div>
 
-    <div class="admin-4col-grid">
-      <div class="col-box" id="boxContainerE" data-target-shift="0">
-        <div class="col-header" style="color: #4B5563;">
-          <span><i class="fa-solid fa-users"></i> Unassigned E</span>
-          <span id="countE" style="font-size: 12px; background: #E5E7EB; padding: 2px 8px; border-radius: 10px;">0</span>
+      <div class="admin-2col-grid">
+      <div class="admin-col-stack">
+        <div class="col-box" id="boxContainerE" data-target-shift="0">
+          <div class="col-header" style="color: #4B5563;">
+            <span><i class="fa-solid fa-users"></i> Unassigned E</span>
+            <span id="countE" style="font-size: 12px; background: #E5E7EB; padding: 2px 8px; border-radius: 10px;">0</span>
+          </div>
+          <div class="card-list" id="boxFaseE"></div>
         </div>
-        <div class="card-list" id="boxFaseE"></div>
+
+        <div class="col-box" id="boxContainerF" data-target-shift="0">
+          <div class="col-header" style="color: #4B5563;">
+            <span><i class="fa-solid fa-users"></i> Unassigned F</span>
+            <span id="countF" style="font-size: 12px; background: #E5E7EB; padding: 2px 8px; border-radius: 10px;">0</span>
+          </div>
+          <div class="card-list" id="boxFaseF"></div>
+        </div>
       </div>
 
-      <div class="col-box" id="boxContainerF" data-target-shift="0">
-        <div class="col-header" style="color: #4B5563;">
-          <span><i class="fa-solid fa-users"></i> Unassigned F</span>
-          <span id="countF" style="font-size: 12px; background: #E5E7EB; padding: 2px 8px; border-radius: 10px;">0</span>
+      <div class="admin-col-stack">
+        <div class="col-box" id="shift1Zone" data-target-shift="1" style="background: #FFF8F3; border-color: var(--primary);">
+          <div class="col-header" style="color: var(--primary);">
+            <span><i class="fa-solid fa-sun"></i> Shift 1</span>
+            <span id="countS1" style="font-size: 12px; background: var(--primary-light); padding: 2px 8px; border-radius: 10px;">0</span>
+          </div>
+          <div class="card-list" id="shift1List"></div>
         </div>
-        <div class="card-list" id="boxFaseF"></div>
-      </div>
 
-      <div class="col-box" id="shift1Zone" data-target-shift="1" style="background: #FFF8F3; border-color: var(--primary);">
-        <div class="col-header" style="color: var(--primary);">
-          <span><i class="fa-solid fa-sun"></i> Shift 1</span>
-          <span id="countS1" style="font-size: 12px; background: var(--primary-light); padding: 2px 8px; border-radius: 10px;">0</span>
+        <div class="col-box" id="shift2Zone" data-target-shift="2" style="background: #FFFBF0; border-color: var(--accent);">
+          <div class="col-header" style="color: var(--accent);">
+            <span><i class="fa-solid fa-cloud-sun"></i> Shift 2</span>
+            <span id="countS2" style="font-size: 12px; background: #FEF3C7; padding: 2px 8px; border-radius: 10px;">0</span>
+          </div>
+          <div class="card-list" id="shift2List"></div>
         </div>
-        <div class="card-list" id="shift1List"></div>
-      </div>
-
-      <div class="col-box" id="shift2Zone" data-target-shift="2" style="background: #FFFBF0; border-color: var(--accent);">
-        <div class="col-header" style="color: var(--accent);">
-          <span><i class="fa-solid fa-cloud-sun"></i> Shift 2</span>
-          <span id="countS2" style="font-size: 12px; background: #FEF3C7; padding: 2px 8px; border-radius: 10px;">0</span>
-        </div>
-            <div class="card-list" id="shift2List"></div>
       </div>
     </div>
 

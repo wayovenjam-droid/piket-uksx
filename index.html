@@ -45,14 +45,14 @@
     @media (max-width: 576px) {
       .admin-2col-grid { gap: 8px; }
       .admin-col-stack { gap: 8px; }
-      .col-box { padding: 10px; min-height: 150px; border-radius: 14px; }
+      .col-box { padding: 10px; min-height: 70px; border-radius: 14px; }
       .col-header { font-size: 12px; margin-bottom: 8px; }
-      .card-list { max-height: 220px; gap: 5px; }
+      .card-list { max-height: 200px; gap: 5px; }
     }
-    .col-box { background: #F9FAFB; border: 2px dashed #D1D5DB; border-radius: 18px; padding: 15px; min-height: 200px; display: flex; flex-direction: column; transition: all 0.15s ease-in-out; }
+    .col-box { background: #F9FAFB; border: 2px dashed #D1D5DB; border-radius: 18px; padding: 15px; min-height: 90px; display: flex; flex-direction: column; transition: all 0.15s ease-in-out; }
     .col-box.drag-over { background: #FFE8D6 !important; border-color: var(--primary) !important; border-style: solid !important; box-shadow: 0 0 15px rgba(255, 107, 0, 0.25); transform: scale(1.01); }
     .col-header { font-weight: 800; font-size: 14px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; pointer-events: none; }
-    .card-list { flex: 1; overflow-y: auto; overscroll-behavior: contain; touch-action: pan-y; max-height: 280px; display: flex; flex-direction: column; gap: 6px; padding: 4px; min-height: 60px; -webkit-overflow-scrolling: touch; }
+    .card-list { flex: 1; overflow-y: auto; overscroll-behavior: contain; touch-action: pan-y; max-height: 240px; display: flex; flex-direction: column; gap: 6px; padding: 4px; min-height: 36px; -webkit-overflow-scrolling: touch; }
   .draggable-card { pointer-events: auto; background: white; border: 1px solid var(--border); border-radius: 10px; padding: 8px 10px; font-weight: 700; font-size: 12.5px; cursor: grab; box-shadow: 0 2px 6px rgba(0,0,0,0.04); display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 8px; user-select: none; touch-action: pan-y; }
     .draggable-card:active { cursor: grabbing; }
     .draggable-card.sortable-drag, .draggable-card.sortable-chosen { background: #FFF4EC; opacity: 0.9; }

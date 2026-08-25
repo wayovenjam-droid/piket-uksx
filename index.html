@@ -43,7 +43,7 @@
      .admin-2col-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; }
     .admin-col-stack { display: flex; flex-direction: column; gap: 15px; }
     @media (max-width: 576px) {
-      .admin-2col-grid { gap: 8px; }
+      .admin-2col-grid { grid-template-columns: 1fr; gap: 8px; }
       .admin-col-stack { gap: 8px; }
       .col-box { padding: 10px; min-height: 70px; border-radius: 14px; }
       .col-header { font-size: 12px; margin-bottom: 8px; }
@@ -1069,10 +1069,10 @@
       if (!el) return;
       const inst = Sortable.create(el, {
         group: 'anggotaPiket',
-        animation: 150,
-        delay: 150,
+        animation: 120,
+        delay: 60,
         delayOnTouchOnly: true,
-        touchStartThreshold: 10,
+        touchStartThreshold: 6,
         fallbackTolerance: 5,
         scroll: true,
         scrollSensitivity: 60,

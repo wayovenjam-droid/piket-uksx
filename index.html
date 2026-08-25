@@ -111,13 +111,17 @@
     .pengumuman-editor-row button { width: auto; padding: 8px 16px; font-size: 12px; align-self: flex-end; }
     .refresh-btn { background: #F3F4F6; border: none; width: 36px; height: 36px; min-width: 36px; border-radius: 10px; cursor: pointer; color: var(--text-muted); font-size: 14px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; touch-action: manipulation; }
     .refresh-btn:hover { background: var(--primary-light); color: var(--primary); }
-    .refresh-btn.spinning i { animation: spin 0.6s linear; }
+        .refresh-btn.spinning i { animation: spin 0.6s linear; }
+    .notif-badge { display:none; background:#EF4444; color:white; font-size:10px; font-weight:800; padding:2px 6px; border-radius:10px; margin-left:4px; }
     @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
     .section-header-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
     .admin-list-row { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; }
     .admin-list-badge-master { font-size: 10px; background: #1A73E8; color: white; padding: 2px 8px; border-radius: 20px; font-weight: 800; margin-left: 4px; }
     .tips-text { font-size: 11px; color: var(--text-muted); font-style: italic; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
     .last-updated-text { font-size: 10.5px; color: #bbb; white-space: nowrap; }
+    .btn-refresh-text { background: #1A73E8; color: white; border: none; padding: 9px 16px; border-radius: 10px; cursor: pointer; font-size: 12.5px; font-weight: 800; display: flex; align-items: center; gap: 6px; touch-action: manipulation; }
+    .btn-refresh-text:hover { background: #1557b0; }
+    .btn-refresh-text.spinning i { animation: spin 0.6s linear; }
   </style>
 </head>
 <body>
@@ -133,6 +137,7 @@
   </div>
 </div>
 
+  
 <div class="modal-overlay" id="modalLogin">
   <div class="modal-card">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
@@ -169,7 +174,7 @@
   <div class="nav-tabs">
     <button class="tab-btn active" id="tabSiswaBtn" onclick="switchTab('siswa', this)"><i class="fa-solid fa-calendar-day"></i> Jadwal</button>
     <button class="tab-btn" id="tabPiketBtn" onclick="switchTab('piket', this)"><i class="fa-solid fa-camera"></i> Bukti Piket</button>
-    <button class="tab-btn" id="tabAdminBtn" style="display:none;" onclick="switchTab('admin', this)"><i class="fa-solid fa-user-shield"></i> Panel Admin</button>
+    <button class="tab-btn" id="tabAdminBtn" style="display:none;" onclick="bukaPanelAdmin(this)"><i class="fa-solid fa-user-shield"></i> Panel Admin <span id="notifBadgeAdmin" class="notif-badge"></span></button>
   </div>
 
   <div id="view-siswa" class="view-section active">
@@ -432,6 +437,10 @@
   </div>
 </div>
 
+<div class="modal-overlay" id="modalLightbox" onclick="tutupLightbox()">
+  <img id="lightboxImg" src="" style="max-width:92vw; max-height:92vh; border-radius:12px; box-shadow:0 20px 50px rgba(0,0,0,0.4);" />
+</div>
+
 <div class="modal-overlay" id="modalGantiPass">
   <div class="modal-card">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
@@ -463,6 +472,8 @@
   let selectedAdminHari = 'Senin';
   let sortableInstances = [];
   let sedangProsesDrag = false;
+  let realtimeChannel = null;
+  let notifBaruCount = 0;
 
   const SHIFT_TIMES = {
     'Senin':  { 1: ['09:05','09:35'], 2: ['12:15','13:00'] },
@@ -485,6 +496,56 @@
     renderShiftSiswa();
     await muatPengumuman();
   }, 30000);
+
+  // === REAL-TIME: dengerin laporan baru masuk ke tabel piket, munculin badge notif otomatis ===
+  function aktifkanRealtimeLaporan() {
+    if (realtimeChannel) return;
+    realtimeChannel = sb.channel('piket-changes')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'piket' }, () => {
+        notifBaruCount++;
+        updateBadgeNotif();
+        if (currentAdminSession) muatRiwayatLaporan();
+      })
+      .subscribe();
+  }
+
+  function matikanRealtimeLaporan() {
+    if (realtimeChannel) {
+      sb.removeChannel(realtimeChannel);
+      realtimeChannel = null;
+    }
+  }
+
+  function updateBadgeNotif() {
+    const badge = document.getElementById('notifBadgeAdmin');
+    if (!badge) return;
+    if (notifBaruCount > 0) {
+      badge.style.display = 'inline-flex';
+      badge.innerText = notifBaruCount > 9 ? '9+' : notifBaruCount;
+    } else {
+      badge.style.display = 'none';
+    }
+  }
+
+  function resetNotifBadge() {
+    notifBaruCount = 0;
+    updateBadgeNotif();
+  }
+
+  function bukaPanelAdmin(el) {
+    switchTab('admin', el);
+    resetNotifBadge();
+  }
+
+  // === LIGHTBOX: klik foto laporan buat lihat ukuran penuh ===
+  function bukaLightbox(url) {
+    document.getElementById('lightboxImg').src = url;
+    document.getElementById('modalLightbox').style.display = 'flex';
+  }
+  function tutupLightbox() {
+    document.getElementById('modalLightbox').style.display = 'none';
+    document.getElementById('lightboxImg').src = '';
+  }
 
   // Helper umum buat semua tombol refresh: kasih efek spin sebentar + panggil fungsi refetch-nya
   function refreshTombol(btnEl, fungsiRefresh) {
@@ -590,6 +651,7 @@
     switchTab('admin', document.getElementById('tabAdminBtn'));
     muatKelolaAdmin();
     muatPengumuman();
+    aktifkanRealtimeLaporan();
   }
 
   async function prosesGantiPassword() {
@@ -664,8 +726,9 @@
     document.getElementById('rekapWaBox').style.display = 'none';
     document.getElementById('daftarAdminBox').style.display = 'none';
     document.getElementById('riwayatLaporanPanel').style.display = 'none';
+    matikanRealtimeLaporan();
+    resetNotifBadge();
     // isMasterOverride & masterTestingBadge sengaja TIDAK direset, biar simulasi tetap jalan pas cek sisi siswa
-       // isMasterOverride & masterTestingBadge sengaja TIDAK direset, biar simulasi tetap jalan pas cek sisi siswa
     switchTab('siswa', document.getElementById('tabSiswaBtn'));
     document.getElementById('mainApp').style.display = 'none';
     document.getElementById('welcomeScreen').style.display = 'flex';
@@ -920,7 +983,7 @@
     box.innerHTML = data.map(r => {
       const status = r.status_verifikasi || 'pending';
       const badgeClass = status === 'diterima' ? 'badge-diterima' : (status === 'ditolak' ? 'badge-ditolak' : 'badge-pending');
-      const badgeText = status === 'diterima' ? 'Diterima' : (status === 'ditolak' ? 'Ditolak' : 'Menunggu');
+      const badgeText = status === 'diterima' ? 'Diterima' : (status === 'ditolak' ? 'Ditolak' : 'Menunggu Konfirmasi (Belum Ditolak)');
 
       const aksiHtml = isAdminLoggedIn ? `
         <div class="riwayat-actions">
@@ -931,14 +994,15 @@
       ` : '';
 
            const jamKirim = r.created_at ? new Date(r.created_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) : '-';
+      const infoVerifikator = (status !== 'pending' && r.verifikator_nama) ? ` <span style="color:#aaa; font-size:10px;">oleh ${r.verifikator_nama}</span>` : '';
 
       return `
         <div class="riwayat-card">
-          <img src="${r.foto_url}" loading="lazy" />
+          <img src="${r.foto_url}" loading="lazy" style="cursor:zoom-in;" onclick="bukaLightbox('${r.foto_url}')" />
           <div class="riwayat-card-info">
             <b>${r.nama_petugas}</b> <span style="color:#aaa; font-weight:600;">• ${jamKirim}</span><br>
             <span style="color: #888;">${r.catatan || '-'}</span><br>
-            <span class="riwayat-badge ${badgeClass}">${badgeText}</span>
+            <span class="riwayat-badge ${badgeClass}">${badgeText}</span>${infoVerifikator}
             ${aksiHtml}
           </div>
         </div>
@@ -949,7 +1013,11 @@
   }
 
   async function verifikasiLaporan(id, status) {
-    await sb.from('piket').update({ status_verifikasi: status }).eq('id', id);
+    await sb.from('piket').update({
+      status_verifikasi: status,
+      verifikator_id: currentAdminSession ? currentAdminSession.id : null,
+      verifikator_nama: currentAdminSession ? currentAdminSession.nama : null
+    }).eq('id', id);
     await muatRiwayatLaporan();
     await muatLaporanHariIni();
     renderShiftSiswa();
@@ -1137,8 +1205,14 @@
 
   document.getElementById('formTambahAnggota').onsubmit = async (e) => {
     e.preventDefault();
-    const nama = document.getElementById('namaBaru').value;
+    const nama = document.getElementById('namaBaru').value.trim();
     const fase = document.getElementById('faseBaru').value;
+
+    const sudahAda = allMembers.some(m => m.nama.trim().toLowerCase() === nama.toLowerCase() && m.fase === fase);
+    if (sudahAda) {
+      alert(`⚠️ ${nama} (Fase ${fase}) udah ada di sistem! Cek lagi kolom Unassigned/Shift-nya dulu, jangan sampai dobel ya~`);
+      return;
+    }
 
     await sb.from('members').insert([{ nama, fase, hari: null, shift: 0 }]);
     document.getElementById('namaBaru').value = '';

@@ -45,8 +45,8 @@
     .col-box { background: #F9FAFB; border: 2px dashed #D1D5DB; border-radius: 18px; padding: 15px; min-height: 260px; display: flex; flex-direction: column; transition: all 0.15s ease-in-out; }
     .col-box.drag-over { background: #FFE8D6 !important; border-color: var(--primary) !important; border-style: solid !important; box-shadow: 0 0 15px rgba(255, 107, 0, 0.25); transform: scale(1.01); }
     .col-header { font-weight: 800; font-size: 14px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; pointer-events: none; }
-    .card-list { flex: 1; overflow-y: auto; max-height: 320px; display: flex; flex-direction: column; gap: 10px; padding: 4px; min-height: 60px; }
-    .draggable-card { pointer-events: auto; background: white; border: 1px solid var(--border); border-radius: 12px; padding: 12px; font-weight: 700; font-size: 13px; cursor: grab; box-shadow: 0 2px 6px rgba(0,0,0,0.04); display: flex; flex-direction: column; gap: 8px; user-select: none; touch-action: none; }
+   .card-list { flex: 1; overflow-y: auto; max-height: 320px; display: flex; flex-direction: column; gap: 10px; padding: 4px; min-height: 60px; -webkit-overflow-scrolling: touch; }
+  .draggable-card { pointer-events: auto; background: white; border: 1px solid var(--border); border-radius: 12px; padding: 12px; font-weight: 700; font-size: 13px; cursor: grab; box-shadow: 0 2px 6px rgba(0,0,0,0.04); display: flex; flex-direction: column; gap: 8px; user-select: none; touch-action: pan-y; }
     .draggable-card:active { cursor: grabbing; }
     .draggable-card.sortable-drag, .draggable-card.sortable-chosen { background: #FFF4EC; opacity: 0.9; }
     .draggable-card.sortable-ghost { opacity: 0.35; }
@@ -368,9 +368,8 @@
         </p>
         <span id="lastUpdateAdminJadwal" class="last-updated-text"></span>
       </div>
-      <div style="display:flex; gap:8px;">
+          <div style="display:flex; gap:8px;">
         <button class="refresh-btn" title="Refresh data anggota" onclick="refreshTombol(this, muatKelolaAdmin)"><i class="fa-solid fa-rotate"></i></button>
-        <button class="refresh-btn" title="Kosongkan jadwal hari ini" style="color:#D93025;" onclick="konfirmasiKosongkanJadwal()"><i class="fa-solid fa-broom"></i></button>
       </div>
     </div>
 
@@ -404,9 +403,13 @@
           <span><i class="fa-solid fa-cloud-sun"></i> Shift 2</span>
           <span id="countS2" style="font-size: 12px; background: #FEF3C7; padding: 2px 8px; border-radius: 10px;">0</span>
         </div>
-        <div class="card-list" id="shift2List"></div>
+            <div class="card-list" id="shift2List"></div>
       </div>
     </div>
+
+    <button class="btn-aesthetic" style="background:#FCE8E6; color:#D93025; margin-top:15px; display:flex; align-items:center; justify-content:center; gap:8px;" onclick="konfirmasiKosongkanJadwal()">
+      <i class="fa-solid fa-broom"></i> Kosongkan Jadwal Hari Ini
+    </button>
   </div>
 </div>
 
@@ -643,7 +646,10 @@
     document.getElementById('daftarAdminBox').style.display = 'none';
     document.getElementById('riwayatLaporanPanel').style.display = 'none';
     // isMasterOverride & masterTestingBadge sengaja TIDAK direset, biar simulasi tetap jalan pas cek sisi siswa
+       // isMasterOverride & masterTestingBadge sengaja TIDAK direset, biar simulasi tetap jalan pas cek sisi siswa
     switchTab('siswa', document.getElementById('tabSiswaBtn'));
+    document.getElementById('mainApp').style.display = 'none';
+    document.getElementById('welcomeScreen').style.display = 'flex';
   }
 
   function switchTab(tabName, element) {
